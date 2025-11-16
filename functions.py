@@ -75,3 +75,18 @@ def Solar_terms(year,month,date):
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
                 
             return month_const[1][-1],date+data.MONTH_DAYS[month_p]-term_date2
+        
+def day_of_year(year,month,date):
+    days=date
+    if(month>2):
+        if(leap_year(year)==1):
+            for i in range(1,month):
+                days=days+data.MONTH_DAYS[i]
+            days=days+1
+        else:
+            for i in range(1,month):
+                days=days+data.MONTH_DAYS[i]
+    else:
+        for i in range(1,month):
+            days=days+data.MONTH_DAYS[i]
+    return days
