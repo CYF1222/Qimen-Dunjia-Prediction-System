@@ -58,9 +58,9 @@ def Solar_terms(year,month,date):
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
             
             if(leap_year(year)==1):
-                return month_const[1][-1],date+29-term_date2
+                return month_const[1][-1],date+data.MONTH_DAYS[month_p]+1-term_date2
             else:
-                return month_const[1][-1],date+28-term_date2
+                return month_const[1][-1],date+data.MONTH_DAYS[month_p]-term_date2
         else:
             month_p=month-1
             month_const=data.TERM_CONST[month_p]
