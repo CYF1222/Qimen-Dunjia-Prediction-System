@@ -1,58 +1,77 @@
-TERM_CONST = {
-    1: [
-        [5.4055, 5.4055, 6.11, 22],    # 小寒
-        [20.12, 20.12, 20.84, 23]      # 大寒
-    ],
-    2: [
-        [3.87, 3.87, 4.74, 0],        # 立春
-        [18.73, 18.73, 19.45, 1]      # 雨水
-    ],
-    3: [
-        [5.63, 5.63, 6.38, 2],        # 惊蛰
-        [20.646, 20.646, 21.31, 3]    # 春分
-    ],
-    4: [
-        [4.81, 4.81, 5.52, 4],        # 清明
-        [20.1, 20.1, 20.84, 5]        # 谷雨
-    ],
-    5: [
-        [5.52, 5.52, 6.22, 6],        # 立夏
-        [21.04, 21.04, 21.86, 7]      # 小满
-    ],
-    6: [
-        [5.678, 5.678, 6.36, 8],      # 芒种
-        [21.37, 21.37, 22.12, 9]      # 夏至
-    ],
-    7: [
-        [7.108, 7.108, 7.93, 10],      # 小暑
-        [22.83, 22.83, 23.65, 11]      # 大暑
-    ],
-    8: [
-        [7.5, 7.5, 8.24, 12],          # 立秋
-        [23.13, 23.13, 23.89, 13]      # 处暑
-    ],
-    9: [
-        [7.646, 7.646, 8.38, 14],      # 白露
-        [23.042, 23.042, 23.82, 15]    # 秋分
-    ],
-    10: [
-        [8.318, 8.318, 9.14, 16],      # 寒露
-        [23.438, 23.438, 24.22, 17]    # 霜降
-    ],
-    11: [
-        [7.438, 7.438, 8.18, 18],      # 立冬
-        [22.36, 22.36, 23.08, 19]      # 小雪
-    ],
-    12: [
-        [7.18, 7.18, 7.90, 20],        # 大雪
-        [21.94, 21.94, 22.60, 21]      # 冬至
-    ]
-}
+import data
+
+def leap_year(year):
+    if((year%4==0 and year%100!=0) or year%400==0):
+        return 1
+    else:
+        return 0
 
 def Solar_terms(year,month,date):
-    if(1900<=year<1999):
-        
-    elif(2000<=year<2099):
-        
-    elif(2100<=year<2200):
-        
+    month_const=data.TERM_CONST[month]
+    
+    if(1900<=year<2000):
+        year_const1=month_const[0][0]
+        year_const2=month_const[1][0]
+        term_date1=int(year_const1 + 0.2422 * (year - 1900) - int((year - 1900)/4))
+        term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
+    elif(2000<=year<2100):
+        year_const1=month_const[0][1]
+        year_const2=month_const[1][1]
+        term_date1=int(year_const1 + 0.2422 * (year - 2000) - int((year - 2000)/4))
+        term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
+    elif(2100<=2200):
+        year_const1=month_const[0][2]
+        year_const2=month_const[1][2]
+        term_date1=int(year_const1 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+        term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+    
+    if(term_date1<=date<term_date2):
+        return month_const[0][-1],date-term_date1
+    elif(date>=term_date2):
+        return month_const[1][-1],date-term_date2
+    else:
+        if(month==1):
+            month_p=12
+            month_const=data.TERM_CONST[month_p]
+            year_p=year-1
+            if(1900<=year_p<2000):
+                year_const2=month_const[1][0]
+                term_date2=int(year_const2 + 0.2422 * (year_p - 1900) - int((year_p - 1900)/4))
+            elif(2000<=year_p<2100):
+                year_const2=month_const[1][1]
+                term_date2=int(year_const2 + 0.2422 * (year_p - 2000) - int((year_p - 2000)/4))
+            elif(2100<=year_p<2200):
+                year_const2=month_const[1][2]
+                term_date2=int(year_const2 + 0.2422 * (year_p - 2100) - int((year_p - 2100)/4))
+            return month_const[1][-1],date+data.MONTH_DAYS[month_p]-term_date2
+        elif(month==3):
+            month_p=2
+            month_const=data.TERM_CONST[month_p]
+            if(1900<=year<2000):
+                year_const2=month_const[1][0]
+                term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
+            elif(2000<=year<2100):
+                year_const2=month_const[1][1]
+                term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
+            elif(2100<=2200):
+                year_const2=month_const[1][2]
+                term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+            
+            if(leap_year(year)==1):
+                return month_const[1][-1],date+29-term_date2
+            else:
+                return month_const[1][-1],date+28-term_date2
+        else:
+            month_p=month-1
+            month_const=data.TERM_CONST[month_p]
+            if(1900<=year<2000):
+                year_const2=month_const[1][0]
+                term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
+            elif(2000<=year<2100):
+                year_const2=month_const[1][1]
+                term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
+            elif(2100<=2200):
+                year_const2=month_const[1][2]
+                term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+                
+            return month_const[1][-1],date+data.MONTH_DAYS[month_p]-term_date2
