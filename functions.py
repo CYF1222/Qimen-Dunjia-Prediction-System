@@ -2,6 +2,14 @@ import data
 import sys
 import io
 
+'''
+def leap_year(year)
+def Solar_terms(year,month,day)
+def day_year(year,month,day)
+def day_between_year(year)
+def get_jiazi(year, month, day)
+'''
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def leap_year(year):
