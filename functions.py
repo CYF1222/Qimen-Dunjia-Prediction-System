@@ -8,6 +8,14 @@ def Solar_terms(year,month,day)
 def day_year(year,month,day)
 def day_between_year(year)
 def get_jiazi(year, month, day)
+def day_p(year,month,day)
+def find_futou(year,month,day)
+def get_sanyuan(futou_ganzhi)
+def get_jushu(solar_term, current_date)
+def days_between_dates(year1, month1, day1, year2, month2, day2)
+def get_previous_solar_term(current_solar_term)
+def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu)
+def get_jushu(year, month, day)
 '''
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -38,9 +46,9 @@ def Solar_terms(year,month,day):
         term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
     
     if(term_date1<=day<term_date2):
-        return month_const[0][-1],day-term_date1,[month,term_date1]
+        return month_const[0][-1],day-term_date1,[year,month,term_date1]
     elif(day>=term_date2):
-        return month_const[1][-1],day-term_date2,[month,term_date2]
+        return month_const[1][-1],day-term_date2,[year,month,term_date2]
     else:
         if(month==1):
             month_p=12
@@ -55,7 +63,7 @@ def Solar_terms(year,month,day):
             elif(2100<=year_p<2200):
                 year_const2=month_const[1][2]
                 term_date2=int(year_const2 + 0.2422 * (year_p - 2100) - int((year_p - 2100)/4))
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
+            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year-1,month_p,term_date2]
         elif(month==3):
             month_p=2
             month_const=data.TERM_CONST[month_p]
@@ -70,9 +78,9 @@ def Solar_terms(year,month,day):
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
             
             if(leap_year(year)==1):
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]+1-term_date2,[month_p,term_date2]
+                return month_const[1][-1],day+data.MONTH_DAYS[month_p]+1-term_date2,[year,month_p,term_date2]
             else:
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
+                return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year,month_p,term_date2]
         else:
             month_p=month-1
             month_const=data.TERM_CONST[month_p]
@@ -86,7 +94,7 @@ def Solar_terms(year,month,day):
                 year_const2=month_const[1][2]
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
                 
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
+            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year,month_p,term_date2]
         
 def day_year(year,month,day):
     days=day
@@ -112,8 +120,116 @@ def get_jiazi(year, month, day):
         index = 60
     return data.jiazi_dict[index]
 
-def get_jushu(year,month,day):
-    if(Solar_terms(year,month,day) in data.yang_dun):
-        
-    elif(Solar_terms(year,month,day) in data.yin_dun):
-        
+def day_p(year,month,day):
+    if(day>1):
+        return [year,month,day-1]
+    else:
+        if(month>3 or month==2):
+            return [year,month-1,data.MONTH_DAYS[month-1]]
+        elif(month==3):
+            if(leap_year(year)==1):
+                return [year,2,data.MONTH_DAYS[2]+1]
+            else:
+                return [year,2,data.MONTH_DAYS[2]]
+        else:
+            return[year-1,12,31]
+
+def find_futou(year,month,day):
+    current_ganzhi = get_jiazi(year,month,day)
+    if current_ganzhi[0] in ['甲', '己']:
+        return [year,month,day], current_ganzhi
+    futou_date = [year,month,day]
+    while True:
+        futou_date = day_p(futou_date[0],futou_date[1],futou_date[2])
+        futou_ganzhi = get_jiazi(futou_date[0],futou_date[1],futou_date[2])
+        if futou_ganzhi[0] in ['甲', '己']:
+            return futou_date, futou_ganzhi
+
+def get_sanyuan(futou_ganzhi):
+    dizhi = futou_ganzhi[1]
+    if (dizhi in ['子', '午', '卯', '酉']):
+        return "上元"
+    elif (dizhi in ['寅', '申', '巳', '亥']):
+        return "中元"
+    else:
+        return "下元"
+
+def days_between_dates(year1, month1, day1, year2, month2, day2):
+    if (year1, month1, day1) > (year2, month2, day2):
+        year1, month1, day1, year2, month2, day2 = year2, month2, day2, year1, month1, day1
+    total_days = 0
+    if year1 == year2 and month1 == month2:
+        return day2 - day1
+    if year1 == year2:
+        if month1 == 2 and leap_year(year1):
+            total_days += data.MONTH_DAYS[month1]+1 - day1
+        else:
+            total_days += data.MONTH_DAYS[month1] - day1
+        for month in range(month1 + 1, month2):
+            if month == 2 and leap_year(year1):
+                total_days += data.MONTH_DAYS[month]+1
+            else:
+                total_days += data.MONTH_DAYS[month]
+        total_days += day2
+        return total_days
+    if month1 == 2 and leap_year(year1):
+        total_days += data.MONTH_DAYS[month]+1 - day1
+    else:
+        total_days += data.MONTH_DAYS[month1] - day1
+    for month in range(month1 + 1, 13):
+        if month == 2 and leap_year(year1):
+            total_days += data.MONTH_DAYS[month]+1
+        else:
+            total_days += data.MONTH_DAYS[month]
+    for year in range(year1 + 1, year2):
+        if leap_year(year):
+            total_days += 366
+        else:
+            total_days += 365
+    for month in range(1, month2):
+        if month == 2 and leap_year(year2):
+            total_days += data.MONTH_DAYS[month]+1
+        else:
+            total_days += data.MONTH_DAYS[month]
+    
+    total_days += day2
+    return total_days
+
+def get_previous_solar_term(current_solar_term):
+    current_index = data.solar_terms.index(current_solar_term)
+    prev_index = (current_index - 1) % len(data.solar_terms)
+    return data.solar_terms[prev_index]
+
+def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu):
+    days_diff = days_between_dates(
+        futou_date[0], futou_date[1], futou_date[2],
+        solar_term_date[0], solar_term_date[1], solar_term_date[2]
+    )
+    
+    if days_diff > 0:
+        # 超神超过9天需要置润
+        if days_diff > 9 and solar_term in ["芒种", "大雪"]:
+            # 置润时使用上一个节气的局数
+            prev_term = get_previous_solar_term(solar_term)
+            prev_jushu = data.ju_table_base.get(prev_term, 1)  # 获取上一个节气的局数
+            return prev_jushu
+        else:
+            return jushu
+    elif days_diff < 0:
+        return jushu
+    else:
+        return jushu
+    
+def get_jushu(year, month, day):
+    solar_term_name, days_after, solar_term_date = Solar_terms(year, month, day)
+    if solar_term_name in data.yang_dun:
+        yinyang='阳'
+        ju_table = data.yang_ju
+    else:
+        ju_table = data.yin_ju
+        yinyang='阴'
+    futou_date, futou_ganzhi = find_futou(year, month, day)
+    sanyuan = get_sanyuan(futou_ganzhi)
+    base_jushu = ju_table.get(solar_term_name, {}).get(sanyuan, 1)
+    final_jushu = check_chaoshen_jieqi(solar_term_date, futou_date, solar_term_name, base_jushu)
+    return yinyang,final_jushu
