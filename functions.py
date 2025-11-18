@@ -38,9 +38,9 @@ def Solar_terms(year,month,day):
         term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
     
     if(term_date1<=day<term_date2):
-        return month_const[0][-1],day-term_date1
+        return month_const[0][-1],day-term_date1,[month,term_date1]
     elif(day>=term_date2):
-        return month_const[1][-1],day-term_date2
+        return month_const[1][-1],day-term_date2,[month,term_date2]
     else:
         if(month==1):
             month_p=12
@@ -55,7 +55,7 @@ def Solar_terms(year,month,day):
             elif(2100<=year_p<2200):
                 year_const2=month_const[1][2]
                 term_date2=int(year_const2 + 0.2422 * (year_p - 2100) - int((year_p - 2100)/4))
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2
+            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
         elif(month==3):
             month_p=2
             month_const=data.TERM_CONST[month_p]
@@ -70,9 +70,9 @@ def Solar_terms(year,month,day):
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
             
             if(leap_year(year)==1):
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]+1-term_date2
+                return month_const[1][-1],day+data.MONTH_DAYS[month_p]+1-term_date2,[month_p,term_date2]
             else:
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2
+                return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
         else:
             month_p=month-1
             month_const=data.TERM_CONST[month_p]
@@ -86,7 +86,7 @@ def Solar_terms(year,month,day):
                 year_const2=month_const[1][2]
                 term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
                 
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2
+            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[month_p,term_date2]
         
 def day_year(year,month,day):
     days=day
@@ -106,8 +106,14 @@ def day_between_year(year):
     return days
 
 def get_jiazi(year, month, day):
-    total_days = day_year(year, month, day) + day_between_year(year)
-    index = (total_days+10) % 60
+    days = day_year(year, month, day) + day_between_year(year)
+    index = (days+10) % 60
     if index == 0:
         index = 60
     return data.jiazi_dict[index]
+
+def get_jushu(year,month,day):
+    if(Solar_terms(year,month,day) in data.yang_dun):
+        
+    elif(Solar_terms(year,month,day) in data.yin_dun):
+        
