@@ -254,7 +254,7 @@ def get_xunshou(hour_ganzhi):
             return data.jiazi_list[i]
     return '甲子'
 
-def determine_shifu(xunshou, earth_plate):
+def determine_zhifu(xunshou, earth_plate):
     liuyi = data.xunshou_to_liuyi[xunshou]
     position = None
     
@@ -293,3 +293,14 @@ def arrange_heaven_plate(earth_plate, shifu, hour_gan):
         heaven_plate[pos] = data.stars[new_star_index]
     return heaven_plate
 
+def arrange_human_plate(xunshou, hour_zhi):
+    zhishi_gate = data.xunshou_to_zhishi.get(xunshou)
+    zhishi_index = data.gates.index(zhishi_gate)
+    target_position = data.zhi_to_jiugong.get(hour_zhi)
+    target_index = data.jiugong.index(target_position)
+    offset = (target_index - zhishi_index) % 8
+    human_plate = {}
+    for i, pos in enumerate(data.jiugong):
+        new_gate_index = (i - offset) % 8
+        human_plate[pos] = data.gates[new_gate_index]
+    return human_plate
