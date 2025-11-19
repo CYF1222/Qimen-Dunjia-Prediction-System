@@ -262,4 +262,18 @@ def determine_shifu(xunshou, earth_plate):
         if value == liuyi:
             position = pos
             break
-    return data.position_to_star[position]
+    return data.jiugong_to_star[position]
+
+def arrange_earth_plate(ju_number, yinyang):
+    earth_plate = {}
+    if yinyang == "阳":
+        start_index = ju_number - 1
+        for i, pos in enumerate(data.jiugong):
+            index = (start_index + i) % 9
+            earth_plate[pos] = data.qiyi[index]
+    else:
+        start_index = ju_number - 1
+        for i, pos in enumerate(data.jiugong):
+            index = (start_index - i) % 9
+            earth_plate[pos] = data.qiyi[index]
+    return earth_plate
