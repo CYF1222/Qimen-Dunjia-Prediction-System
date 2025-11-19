@@ -265,15 +265,31 @@ def determine_shifu(xunshou, earth_plate):
     return data.jiugong_to_star[position]
 
 def arrange_earth_plate(ju_number, yinyang):
-    earth_plate = {}
+    earth_plate_dict = {}
+    start_index = ju_number - 1
     if yinyang == "阳":
-        start_index = ju_number - 1
-        for i, pos in enumerate(data.jiugong):
-            index = (start_index + i) % 9
-            earth_plate[pos] = data.qiyi[index]
+        for i, gong in enumerate(data.jiugong):
+            star_index = (start_index + i) % 9
+            earth_plate_dict[gong] = data.qiyi[star_index]
     else:
-        start_index = ju_number - 1
-        for i, pos in enumerate(data.jiugong):
-            index = (start_index - i) % 9
-            earth_plate[pos] = data.qiyi[index]
-    return earth_plate
+        for i, gong in enumerate(data.jiugong):
+            star_index = (start_index - i) % 9
+            earth_plate_dict[gong] = data.qiyi[star_index]
+    return earth_plate_dict
+
+def arrange_heaven_plate(earth_plate, shifu, hour_gan):
+    shifu_position = None
+    for pos, star in earth_plate.items():
+        if star == shifu:
+            shifu_position = pos
+            break
+    target_position = data.gan_to_jiugong.get(hour_gan)
+    start_index = data.jiugong.index(shifu_position)
+    target_index = data.jiugong.index(target_position)
+    offset = (target_index - start_index) % 9
+    heaven_plate = {}
+    for i, pos in enumerate(data.jiugong):
+        new_star_index = (i - offset) % 9
+        heaven_plate[pos] = data.stars[new_star_index]
+    return heaven_plate
+
