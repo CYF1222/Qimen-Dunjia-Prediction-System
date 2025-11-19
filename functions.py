@@ -118,7 +118,7 @@ def get_jiazi(year, month, day):
     index = (days+10) % 60
     if index == 0:
         index = 60
-    return data.jiazi_dict[index]
+    return data.jiazi_list[index-1]
 
 def day_p(year,month,day):
     if(day>1):
@@ -233,3 +233,33 @@ def get_jushu(year, month, day):
     base_jushu = ju_table.get(solar_term_name, {}).get(sanyuan, 1)
     final_jushu = check_chaoshen_jieqi(solar_term_date, futou_date, solar_term_name, base_jushu)
     return yinyang,final_jushu
+
+def get_hour_ganzhi(day_ganzhi, hour):
+    day_gan = day_ganzhi[0]
+    hour_branch = data.hour_to_branch[hour]
+    branch_index = data.di_zhi.index(hour_branch)
+    zi_gan = data.wushudun[day_gan]
+    zi_gan_index = data.tian_gan.index(zi_gan)
+    hour_gan_index = (zi_gan_index + branch_index) % 10
+    hour_gan = data.tian_gan[hour_gan_index]
+    return hour_gan + hour_branch
+
+def get_xunshou(hour_ganzhi):
+    current_index = data.jiazi_list.index(hour_ganzhi)
+    for i in range(current_index, -1, -1):
+        if data.jiazi_list[i] in data.xunshou_list:
+            return data.jiazi_list[i]
+    for i in range(len(data.jiazi_list)-1, current_index, -1):
+        if data.jiazi_list[i] in data.xunshou_list:
+            return data.jiazi_list[i]
+    return '甲子'
+
+def determine_shifu(xunshou, earth_plate):
+    liuyi = data.xunshou_to_liuyi[xunshou]
+    position = None
+    
+    for pos, value in earth_plate.items():
+        if value == liuyi:
+            position = pos
+            break
+    return data.position_to_star[position]
