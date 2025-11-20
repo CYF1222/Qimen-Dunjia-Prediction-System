@@ -268,13 +268,15 @@ def arrange_earth_plate(ju_number, yinyang):
     earth_plate_dict = {}
     start_index = ju_number - 1
     if yinyang == "阳":
-        for i, gong in enumerate(data.jiugong):
-            star_index = (start_index + i) % 9
+        for i, gong in enumerate(data.jiugong[:-1]):
+            star_index = (start_index + i) % 8
             earth_plate_dict[gong] = data.qiyi[star_index]
     else:
-        for i, gong in enumerate(data.jiugong):
-            star_index = (start_index - i) % 9
+        for i, gong in enumerate(data.jiugong[:-1]):
+            star_index = (start_index - i) % 8
             earth_plate_dict[gong] = data.qiyi[star_index]
+    earth_plate_dict[data.jiugong[8]] = data.qiyi[ju_number - 1]
+    
     return earth_plate_dict
 
 def arrange_heaven_plate(earth_plate, shifu, hour_gan):
@@ -298,9 +300,24 @@ def arrange_human_plate(xunshou, hour_zhi):
     zhishi_index = data.gates.index(zhishi_gate)
     target_position = data.zhi_to_jiugong.get(hour_zhi)
     target_index = data.jiugong.index(target_position)
-    offset = (target_index - zhishi_index) % 8
+    offset = (target_index - zhishi_index) % 9
     human_plate = {}
     for i, pos in enumerate(data.jiugong):
-        new_gate_index = (i - offset) % 8
+        new_gate_index = (i - offset) % 9
         human_plate[pos] = data.gates[new_gate_index]
     return human_plate
+
+def arrange_god_plate(yinyang, zhifu_position):
+    start_index = data.jiugong.index(zhifu_position)
+    if yinyang == "阳":
+        gods = data.gods_yang
+        direction = 1
+    else:
+        gods = data.gods_yin
+        direction = 1
+    god_plate = {}
+    for i, pos in enumerate(data.jiugong):
+        god_index = (start_index + i * direction) % 9
+        god_plate[pos] = gods[god_index]
+    return god_plate
+
