@@ -257,7 +257,6 @@ def get_xunshou(hour_ganzhi):
 def determine_zhifu(xunshou, earth_plate):
     liuyi = data.xunshou_to_liuyi[xunshou]
     position = None
-    
     for pos, value in earth_plate.items():
         if value == liuyi:
             position = pos
@@ -279,10 +278,10 @@ def arrange_earth_plate(ju_number, yinyang):
     
     return earth_plate_dict
 
-def arrange_heaven_plate(earth_plate, shifu, hour_gan):
+def arrange_heaven_plate(earth_plate, zhifu, hour_gan):
     shifu_position = None
     for pos, star in earth_plate.items():
-        if star == shifu:
+        if star == zhifu:
             shifu_position = pos
             break
     target_position = data.gan_to_jiugong.get(hour_gan)
@@ -321,3 +320,47 @@ def arrange_god_plate(yinyang, zhifu_position):
         god_plate[pos] = gods[god_index]
     return god_plate
 
+def get_month_ganzhi(year_gan_zhi, month):
+    year_gan, year_zhi = year_gan_zhi
+    gan_index = data.tian_gan.index(year_gan)
+    zhi_index = data.di_zhi.index(year_zhi)
+    month_gan = data.tian_gan[(gan_index * 12 + (month - 1)) % 10]
+    month_zhi = data.di_zhi[(zhi_index * 12 + (month - 1)) % 12]
+    return month_gan, month_zhi
+
+def get_year_ganzhi(year):
+    gan_index = (year - 1) % 10
+    zhi_index = (year - 1) % 12
+    return data.tian_gan[gan_index], data.di_zhi[zhi_index]
+
+def create_qimen_pan(year, month, day, hour):
+    solar_term, _, solar_term_date = Solar_terms(year, month, day)
+    yinyang,ju_number = get_jushu(solar_term, year, month, day)
+    day_ganzhi = get_jiazi(year, month, day)
+    hour_ganzhi = get_hour_ganzhi(day_ganzhi, hour)
+    zhifu=determine_zhifu(get_xunshou(get_hour_ganzhi(get_jiazi(year, month, day),hour)))
+    zhishi = data.xunshou_to_zhishi[get_xunshou(get_hour_ganzhi(get_jiazi(year, month, day),hour))]
+    earth_plate = arrange_earth_plate(ju_number, yinyang)
+    heaven_plate = arrange_heaven_plate(earth_plate, zhifu, hour_ganzhi[0])
+    human_plate = arrange_human_plate(zhishi, hour_ganzhi[1])
+    god_plate = arrange_god_plate(zhifu, yinyang)
+    return {
+        '基本信息': {
+            '时间': f"{year}年{month}月{day}日{hour}时",
+            '节气': solar_term,
+            '阴阳遁': yinyang,
+            '局数': ju_number,
+            '四柱': {
+                '年': get_year_ganzhi(year) + '年', 
+                '月': get_month_ganzhi(get_year_ganzhi(year), month),
+                '日': day_ganzhi,
+                '时': hour_ganzhi
+            }
+        },
+        '地盘': earth_plate,
+        '天盘': heaven_plate,
+        '人盘': human_plate,
+        '神盘': god_plate,
+        '值符': zhifu,
+        '值使': zhishi
+    }
