@@ -268,14 +268,13 @@ def arrange_earth_plate(ju_number, yinyang):
     start_index = ju_number - 1
     if yinyang == "阳":
         for i, gong in enumerate(data.jiugong[:-1]):
-            star_index = (start_index + i) % 8
-            earth_plate_dict[gong] = data.qiyi[star_index]
+            star_index = (start_index + i) % 9
+            earth_plate_dict[data.jiugong[star_index]] = data.qiyi[star_index]
     else:
         for i, gong in enumerate(data.jiugong[:-1]):
-            star_index = (start_index - i) % 8
-            earth_plate_dict[gong] = data.qiyi[star_index]
-    earth_plate_dict[data.jiugong[8]] = data.qiyi[ju_number - 1]
-    
+            star_index = (start_index - i) % 9
+            earth_plate_dict[data.jiugong[star_index]] = data.qiyi[star_index]
+    earth_plate_dict[data.jiugong[-1]] = data.qiyi[ju_number - 1]
     return earth_plate_dict
 
 def arrange_heaven_plate(earth_plate, zhifu, hour_gan):
