@@ -207,9 +207,7 @@ def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu):
     )
     
     if days_diff > 0:
-        # 超神超过9天需要置润
         if days_diff > 9 and solar_term in ["芒种", "大雪"]:
-            # 置润时使用上一个节气的局数
             prev_term = get_previous_solar_term(solar_term)
             prev_jushu = data.ju_table_base.get(prev_term, 1)  # 获取上一个节气的局数
             return prev_jushu
@@ -254,69 +252,173 @@ def get_xunshou(hour_ganzhi):
             return data.jiazi_list[i]
     return '甲子'
 
-def determine_zhifu(xunshou, earth_plate):
-    liuyi = data.xunshou_to_liuyi[xunshou]
-    position = None
-    for pos, value in earth_plate.items():
-        if value == liuyi:
-            position = pos
-            break
-    return data.jiugong_to_star[position]
+def get_xunxu(xunshou):
+    """根据旬首获取旬序数"""
+    return data.xunshou_to_xunxu[xunshou]
+
+def get_zhifu_zhishi_index(ju_number, xunxu, yinyang):
+    """计算值符和值使的序数"""
+    if yinyang == "阳":
+        # 阳遁：直符直使序数 = 局数 + 旬序数 - 1
+        index = ju_number + xunxu - 1
+    else:
+        # 阴遁：直符直使序数 = 1 + 局数 - 旬序数
+        index = 1 + ju_number - xunxu
+    
+    # 如果计算结果大于9，则减去9
+    if index > 9:
+        index -= 9
+    # 如果计算结果小于1，则加上9
+    elif index < 1:
+        index += 9
+    
+    return index
+
+def get_zhifu_zhishi_by_index(index):
+    """根据序数确定值符和值使"""
+    return data.index_to_zhifu_zhishi[index]
+
+def determine_zhifu_and_zhishi(xunshou, ju_number, yinyang):
+    """根据旬首、局数和阴阳遁确定值符和值使"""
+    # 获取旬序数
+    xunxu = get_xunxu(xunshou)
+    
+    # 计算值符值使序数
+    index = get_zhifu_zhishi_index(ju_number, xunxu, yinyang)
+    
+    # 根据序数确定值符和值使
+    zhifu, zhishi = get_zhifu_zhishi_by_index(index)
+    
+    return zhifu, zhishi
 
 def arrange_earth_plate(ju_number, yinyang):
     earth_plate_dict = {}
     start_index = ju_number - 1
+    
     if yinyang == "阳":
-        for i, gong in enumerate(data.jiugong[:-1]):
+        # 阳遁顺行
+        for i, gong in enumerate(data.jiugong):  # 遍历所有九宫
             star_index = (start_index + i) % 9
-            earth_plate_dict[data.jiugong[star_index]] = data.qiyi[star_index]
+            earth_plate_dict[gong] = data.qiyi[star_index]
     else:
-        for i, gong in enumerate(data.jiugong[:-1]):
+        # 阴遁逆行
+        for i, gong in enumerate(data.jiugong):  # 遍历所有九宫
             star_index = (start_index - i) % 9
-            earth_plate_dict[data.jiugong[star_index]] = data.qiyi[star_index]
-    earth_plate_dict[data.jiugong[-1]] = data.qiyi[ju_number - 1]
+            earth_plate_dict[gong] = data.qiyi[star_index]
+    
     return earth_plate_dict
 
-def arrange_heaven_plate(earth_plate, zhifu, hour_gan):
-    shifu_position = None
-    for pos, star in earth_plate.items():
-        if star == zhifu:
-            shifu_position = pos
-            break
-    target_position = data.gan_to_jiugong.get(hour_gan)
-    start_index = data.jiugong.index(shifu_position)
-    target_index = data.jiugong.index(target_position)
-    offset = (target_index - start_index) % 9
-    heaven_plate = {}
-    for i, pos in enumerate(data.jiugong):
-        new_star_index = (i - offset) % 9
-        heaven_plate[pos] = data.stars[new_star_index]
-    return heaven_plate
 
-def arrange_human_plate(xunshou, hour_zhi):
-    zhishi_gate = data.xunshou_to_zhishi.get(xunshou)
-    zhishi_index = data.gates.index(zhishi_gate)
+def arrange_human_plate(xunshou, hour_zhi, yinyang):
+    zhishi_gate = data.xunshou_to_zhishi[xunshou]  # 获取值使的门
+    
+    # 获取时支对应的宫位
     target_position = data.zhi_to_jiugong.get(hour_zhi)
+    if target_position is None:
+        target_position = "中"  # 如果时支没有对应宫位，默认为中宫
+    
+    # 找到值使门在初始布局中的位置
+    # 初始布局：休门在坎，生门在艮，伤门在震，杜门在巽，景门在离，死门在坤，惊门在兑，开门在乾
+    
+    start_position = data.initial_gate_positions.get(zhishi_gate, "坎")
+    
+    # 计算偏移量
+    start_index = data.jiugong.index(start_position)
     target_index = data.jiugong.index(target_position)
-    offset = (target_index - zhishi_index) % 9
+    
+    if yinyang == "阳":
+        offset = (target_index - start_index) % 9
+    else:
+        offset = (start_index - target_index) % 9
+    
     human_plate = {}
+    
+    # 处理人盘，跳过中宫
     for i, pos in enumerate(data.jiugong):
-        new_gate_index = (i - offset) % 9
-        human_plate[pos] = data.gates[new_gate_index]
+        if pos == "中":  # 跳过中宫
+            human_plate[pos] = None
+            continue
+            
+        # 找到值使门在门列表中的索引
+        zhishi_index = data.gates.index(zhishi_gate)
+        
+        if yinyang == "阳":
+            gate_index = (zhishi_index + i + offset) % 8
+        else:
+            gate_index = (zhishi_index - i - offset) % 8
+            
+        human_plate[pos] = data.gates[gate_index % 8]
+    
     return human_plate
 
-def arrange_god_plate(yinyang, zhifu_position):
-    start_index = data.jiugong.index(zhifu_position)
+def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
+    # 找到值符星在地盘上的位置
+    start_position = None
+    for pos, star in earth_plate.items():
+        if star == zhifu:
+            start_position = pos
+            break
+    
+    if start_position is None:
+        start_position = "坎"  # 默认值
+    
+    # 获取时干对应的宫位
+    target_position = data.gan_to_jiugong.get(hour_gan)
+    if target_position is None:
+        target_position = "中"
+    
+    # 计算偏移量
+    start_index = data.jiugong.index(start_position)
+    target_index = data.jiugong.index(target_position)
+    
+    if yinyang == "阳":
+        offset = (target_index - start_index) % 9
+    else:
+        offset = (start_index - target_index) % 9
+    
+    heaven_plate = {}
+    
+    # 找到值符星在星列表中的索引
+    zhifu_index = data.stars.index(zhifu)
+    
+    # 排列天盘
+    for i, pos in enumerate(data.jiugong):
+        if pos == "中":  # 跳过中宫
+            heaven_plate[pos] = None
+            continue
+            
+        if yinyang == "阳":
+            star_index = (zhifu_index + offset + i) % 9
+        else:
+            star_index = (zhifu_index - offset - i) % 9
+            
+        heaven_plate[pos] = data.stars[star_index % 9]
+    
+    return heaven_plate
+
+def arrange_god_plate(zhifu_position, yinyang):
+    # 根据阴阳选择对应的神明列表
     if yinyang == "阳":
         gods = data.gods_yang
-        direction = 1
+        direction = 1  # 顺行
     else:
-        gods = data.gods_yin
-        direction = 1
+        gods = data.gods_yin  
+        direction = -1  # 逆行
+    
     god_plate = {}
+    
+    # 找到值符神的位置
+    start_index = data.jiugong.index(zhifu_position)
+    
+    # 排列神盘
     for i, pos in enumerate(data.jiugong):
-        god_index = (start_index + i * direction) % 9
+        if pos == "中":  # 中宫为空
+            god_plate[pos] = None
+            continue
+            
+        god_index = (start_index + direction * i) % 8
         god_plate[pos] = gods[god_index]
+    
     return god_plate
 
 def get_month_ganzhi(year_gan_zhi, month):
@@ -334,15 +436,34 @@ def get_year_ganzhi(year):
 
 def create_qimen_pan(year, month, day, hour):
     solar_term, _, solar_term_date = Solar_terms(year, month, day)
-    yinyang,ju_number = get_jushu(solar_term, year, month, day)
+    yinyang, ju_number = get_jushu(year, month, day)
     day_ganzhi = get_jiazi(year, month, day)
     hour_ganzhi = get_hour_ganzhi(day_ganzhi, hour)
-    zhifu=determine_zhifu(get_xunshou(get_hour_ganzhi(get_jiazi(year, month, day),hour)))
-    zhishi = data.xunshou_to_zhishi[get_xunshou(get_hour_ganzhi(get_jiazi(year, month, day),hour))]
+    xunshou = get_xunshou(hour_ganzhi)
+    
+    print(f"旬首: {xunshou}")
+    
     earth_plate = arrange_earth_plate(ju_number, yinyang)
-    heaven_plate = arrange_heaven_plate(earth_plate, zhifu, hour_ganzhi[0])
-    human_plate = arrange_human_plate(zhishi, hour_ganzhi[1])
-    god_plate = arrange_god_plate(zhifu, yinyang)
+    print(f"地盘: {earth_plate}")
+    
+    # 使用新的函数确定值符和值使
+    zhifu, zhishi = determine_zhifu_and_zhishi(xunshou, ju_number, yinyang)
+    
+    print(f"值符星: {zhifu}")
+    print(f"值使门: {zhishi}")
+    
+    # 找到值符星在地盘上的位置
+    zhifu_position = None
+    # 我们需要找到与值符对应的宫位
+    for pos, star in data.jiugong_to_star.items():
+        if star == zhifu:
+            zhifu_position = pos
+            break
+    
+    heaven_plate = arrange_heaven_plate(earth_plate, zhifu, hour_ganzhi[0], yinyang)
+    human_plate = arrange_human_plate(xunshou, hour_ganzhi[1], yinyang)
+    god_plate = arrange_god_plate(zhifu_position, yinyang)
+    
     return {
         '基本信息': {
             '时间': f"{year}年{month}月{day}日{hour}时",
@@ -350,7 +471,7 @@ def create_qimen_pan(year, month, day, hour):
             '阴阳遁': yinyang,
             '局数': ju_number,
             '四柱': {
-                '年': get_year_ganzhi(year) + '年', 
+                '年': get_year_ganzhi(year)[0] + get_year_ganzhi(year)[1] + '年', 
                 '月': get_month_ganzhi(get_year_ganzhi(year), month),
                 '日': day_ganzhi,
                 '时': hour_ganzhi
@@ -363,3 +484,5 @@ def create_qimen_pan(year, month, day, hour):
         '值符': zhifu,
         '值使': zhishi
     }
+print(create_qimen_pan(2024,8,16,14))
+
