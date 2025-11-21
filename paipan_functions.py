@@ -2,150 +2,146 @@ import data
 import sys
 import io
 
-'''
-def leap_year(year)
-def Solar_terms(year,month,day)
-def day_year(year,month,day)
-def day_between_year(year)
-def get_jiazi(year, month, day)
-def day_p(year,month,day)
-def find_futou(year,month,day)
-def get_sanyuan(futou_ganzhi)
-def get_jushu(solar_term, current_date)
-def days_between_dates(year1, month1, day1, year2, month2, day2)
-def get_previous_solar_term(current_solar_term)
-def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu)
-def get_jushu(year, month, day)
-'''
-
+# 设置标准输出编码为UTF-8，确保中文字符正常显示
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def leap_year(year):
-    if((year%4==0 and year%100!=0) or year%400==0):
+    """判断是否为闰年"""
+    if ((year % 4 == 0 and year % 100 != 0) or year % 400 == 0):
         return 1
     else:
         return 0
 
-def Solar_terms(year,month,day):
-    month_const=data.TERM_CONST[month]
+def Solar_terms(year, month, day):
+    """计算节气信息"""
+    month_const = data.TERM_CONST[month]
     
-    if(1900<=year<2000):
-        year_const1=month_const[0][0]
-        year_const2=month_const[1][0]
-        term_date1=int(year_const1 + 0.2422 * (year - 1900) - int((year - 1900)/4))
-        term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
-    elif(2000<=year<2100):
-        year_const1=month_const[0][1]
-        year_const2=month_const[1][1]
-        term_date1=int(year_const1 + 0.2422 * (year - 2000) - int((year - 2000)/4))
-        term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
-    elif(2100<=2200):
-        year_const1=month_const[0][2]
-        year_const2=month_const[1][2]
-        term_date1=int(year_const1 + 0.2422 * (year - 2100) - int((year - 2100)/4))
-        term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+    # 根据年份范围选择对应的常数
+    if (1900 <= year < 2000):
+        year_const1 = month_const[0][0]
+        year_const2 = month_const[1][0]
+        term_date1 = int(year_const1 + 0.2422 * (year - 1900) - int((year - 1900) / 4))
+        term_date2 = int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900) / 4))
+    elif (2000 <= year < 2100):
+        year_const1 = month_const[0][1]
+        year_const2 = month_const[1][1]
+        term_date1 = int(year_const1 + 0.2422 * (year - 2000) - int((year - 2000) / 4))
+        term_date2 = int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000) / 4))
+    elif (2100 <= year < 2200):
+        year_const1 = month_const[0][2]
+        year_const2 = month_const[1][2]
+        term_date1 = int(year_const1 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
+        term_date2 = int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
     
-    if(term_date1<=day<term_date2):
-        return month_const[0][-1],day-term_date1,[year,month,term_date1]
-    elif(day>=term_date2):
-        return month_const[1][-1],day-term_date2,[year,month,term_date2]
+    # 判断当前日期属于哪个节气区间
+    if (term_date1 <= day < term_date2):
+        return month_const[0][-1], day - term_date1, [year, month, term_date1]
+    elif (day >= term_date2):
+        return month_const[1][-1], day - term_date2, [year, month, term_date2]
     else:
-        if(month==1):
-            month_p=12
-            month_const=data.TERM_CONST[month_p]
-            year_p=year-1
-            if(1900<=year_p<2000):
-                year_const2=month_const[1][0]
-                term_date2=int(year_const2 + 0.2422 * (year_p - 1900) - int((year_p - 1900)/4))
-            elif(2000<=year_p<2100):
-                year_const2=month_const[1][1]
-                term_date2=int(year_const2 + 0.2422 * (year_p - 2000) - int((year_p - 2000)/4))
-            elif(2100<=year_p<2200):
-                year_const2=month_const[1][2]
-                term_date2=int(year_const2 + 0.2422 * (year_p - 2100) - int((year_p - 2100)/4))
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year-1,month_p,term_date2]
-        elif(month==3):
-            month_p=2
-            month_const=data.TERM_CONST[month_p]
-            if(1900<=year<2000):
-                year_const2=month_const[1][0]
-                term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
-            elif(2000<=year<2100):
-                year_const2=month_const[1][1]
-                term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
-            elif(2100<=2200):
-                year_const2=month_const[1][2]
-                term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+        # 如果当前日期不在本月节气区间，需要查找前一个月的节气
+        if (month == 1):
+            month_p = 12
+            month_const = data.TERM_CONST[month_p]
+            year_p = year - 1
+            if (1900 <= year_p < 2000):
+                year_const2 = month_const[1][0]
+                term_date2 = int(year_const2 + 0.2422 * (year_p - 1900) - int((year_p - 1900) / 4))
+            elif (2000 <= year_p < 2100):
+                year_const2 = month_const[1][1]
+                term_date2 = int(year_const2 + 0.2422 * (year_p - 2000) - int((year_p - 2000) / 4))
+            elif (2100 <= year_p < 2200):
+                year_const2 = month_const[1][2]
+                term_date2 = int(year_const2 + 0.2422 * (year_p - 2100) - int((year_p - 2100) / 4))
+            return month_const[1][-1], day + data.MONTH_DAYS[month_p] - term_date2, [year - 1, month_p, term_date2]
+        elif (month == 3):
+            month_p = 2
+            month_const = data.TERM_CONST[month_p]
+            if (1900 <= year < 2000):
+                year_const2 = month_const[1][0]
+                term_date2 = int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900) / 4))
+            elif (2000 <= year < 2100):
+                year_const2 = month_const[1][1]
+                term_date2 = int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000) / 4))
+            elif (2100 <= year < 2200):
+                year_const2 = month_const[1][2]
+                term_date2 = int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
             
-            if(leap_year(year)==1):
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]+1-term_date2,[year,month_p,term_date2]
+            if (leap_year(year) == 1):
+                return month_const[1][-1], day + data.MONTH_DAYS[month_p] + 1 - term_date2, [year, month_p, term_date2]
             else:
-                return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year,month_p,term_date2]
+                return month_const[1][-1], day + data.MONTH_DAYS[month_p] - term_date2, [year, month_p, term_date2]
         else:
-            month_p=month-1
-            month_const=data.TERM_CONST[month_p]
-            if(1900<=year<2000):
-                year_const2=month_const[1][0]
-                term_date2=int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900)/4))
-            elif(2000<=year<2100):
-                year_const2=month_const[1][1]
-                term_date2=int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000)/4))
-            elif(2100<=2200):
-                year_const2=month_const[1][2]
-                term_date2=int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100)/4))
+            month_p = month - 1
+            month_const = data.TERM_CONST[month_p]
+            if (1900 <= year < 2000):
+                year_const2 = month_const[1][0]
+                term_date2 = int(year_const2 + 0.2422 * (year - 1900) - int((year - 1900) / 4))
+            elif (2000 <= year < 2100):
+                year_const2 = month_const[1][1]
+                term_date2 = int(year_const2 + 0.2422 * (year - 2000) - int((year - 2000) / 4))
+            elif (2100 <= year < 2200):
+                year_const2 = month_const[1][2]
+                term_date2 = int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
                 
-            return month_const[1][-1],day+data.MONTH_DAYS[month_p]-term_date2,[year,month_p,term_date2]
-        
-def day_year(year,month,day):
-    days=day
-    for i in range(1,month):
-        days=days+data.MONTH_DAYS[i]
-    if(month>2 and leap_year(year)):
-        days=days+1
+            return month_const[1][-1], day + data.MONTH_DAYS[month_p] - term_date2, [year, month_p, term_date2]
+
+def day_year(year, month, day):
+    """计算指定日期是该年的第几天"""
+    days = day
+    for i in range(1, month):
+        days = days + data.MONTH_DAYS[i]
+    if (month > 2 and leap_year(year)):
+        days = days + 1
     return days
 
 def day_between_year(year):
-    days=0
-    for i in range(1900,year):
-        if(leap_year(i)):
-            days=days+366
+    """计算从1900年到指定年份前一年的总天数"""
+    days = 0
+    for i in range(1900, year):
+        if (leap_year(i)):
+            days = days + 366
         else:
-            days=days+365
+            days = days + 365
     return days
 
 def get_jiazi(year, month, day):
+    """计算日柱干支"""
     days = day_year(year, month, day) + day_between_year(year)
-    index = (days+10) % 60
+    index = (days + 10) % 60
     if index == 0:
         index = 60
-    return data.jiazi_list[index-1]
+    return data.jiazi_list[index - 1]
 
-def day_p(year,month,day):
-    if(day>1):
-        return [year,month,day-1]
+def day_p(year, month, day):
+    """获取前一天的日期"""
+    if (day > 1):
+        return [year, month, day - 1]
     else:
-        if(month>3 or month==2):
-            return [year,month-1,data.MONTH_DAYS[month-1]]
-        elif(month==3):
-            if(leap_year(year)==1):
-                return [year,2,data.MONTH_DAYS[2]+1]
+        if (month > 3 or month == 2):
+            return [year, month - 1, data.MONTH_DAYS[month - 1]]
+        elif (month == 3):
+            if (leap_year(year) == 1):
+                return [year, 2, data.MONTH_DAYS[2] + 1]
             else:
-                return [year,2,data.MONTH_DAYS[2]]
+                return [year, 2, data.MONTH_DAYS[2]]
         else:
-            return[year-1,12,31]
+            return [year - 1, 12, 31]
 
-def find_futou(year,month,day):
-    current_ganzhi = get_jiazi(year,month,day)
+def find_futou(year, month, day):
+    """查找符头日期和干支"""
+    current_ganzhi = get_jiazi(year, month, day)
     if current_ganzhi[0] in ['甲', '己']:
-        return [year,month,day], current_ganzhi
-    futou_date = [year,month,day]
+        return [year, month, day], current_ganzhi
+    futou_date = [year, month, day]
     while True:
-        futou_date = day_p(futou_date[0],futou_date[1],futou_date[2])
-        futou_ganzhi = get_jiazi(futou_date[0],futou_date[1],futou_date[2])
+        futou_date = day_p(futou_date[0], futou_date[1], futou_date[2])
+        futou_ganzhi = get_jiazi(futou_date[0], futou_date[1], futou_date[2])
         if futou_ganzhi[0] in ['甲', '己']:
             return futou_date, futou_ganzhi
 
 def get_sanyuan(futou_ganzhi):
+    """根据符头干支确定三元"""
     dizhi = futou_ganzhi[1]
     if (dizhi in ['子', '午', '卯', '酉']):
         return "上元"
@@ -155,6 +151,7 @@ def get_sanyuan(futou_ganzhi):
         return "下元"
 
 def days_between_dates(year1, month1, day1, year2, month2, day2):
+    """计算两个日期之间的天数差"""
     if (year1, month1, day1) > (year2, month2, day2):
         year1, month1, day1, year2, month2, day2 = year2, month2, day2, year1, month1, day1
     total_days = 0
@@ -162,23 +159,23 @@ def days_between_dates(year1, month1, day1, year2, month2, day2):
         return day2 - day1
     if year1 == year2:
         if month1 == 2 and leap_year(year1):
-            total_days += data.MONTH_DAYS[month1]+1 - day1
+            total_days += data.MONTH_DAYS[month1] + 1 - day1
         else:
             total_days += data.MONTH_DAYS[month1] - day1
         for month in range(month1 + 1, month2):
             if month == 2 and leap_year(year1):
-                total_days += data.MONTH_DAYS[month]+1
+                total_days += data.MONTH_DAYS[month] + 1
             else:
                 total_days += data.MONTH_DAYS[month]
         total_days += day2
         return total_days
     if month1 == 2 and leap_year(year1):
-        total_days += data.MONTH_DAYS[month]+1 - day1
+        total_days += data.MONTH_DAYS[month1] + 1 - day1
     else:
         total_days += data.MONTH_DAYS[month1] - day1
     for month in range(month1 + 1, 13):
         if month == 2 and leap_year(year1):
-            total_days += data.MONTH_DAYS[month]+1
+            total_days += data.MONTH_DAYS[month] + 1
         else:
             total_days += data.MONTH_DAYS[month]
     for year in range(year1 + 1, year2):
@@ -188,7 +185,7 @@ def days_between_dates(year1, month1, day1, year2, month2, day2):
             total_days += 365
     for month in range(1, month2):
         if month == 2 and leap_year(year2):
-            total_days += data.MONTH_DAYS[month]+1
+            total_days += data.MONTH_DAYS[month] + 1
         else:
             total_days += data.MONTH_DAYS[month]
     
@@ -196,11 +193,13 @@ def days_between_dates(year1, month1, day1, year2, month2, day2):
     return total_days
 
 def get_previous_solar_term(current_solar_term):
+    """获取前一个节气"""
     current_index = data.solar_terms.index(current_solar_term)
     prev_index = (current_index - 1) % len(data.solar_terms)
     return data.solar_terms[prev_index]
 
 def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu):
+    """检查超神接气，调整局数"""
     days_diff = days_between_dates(
         futou_date[0], futou_date[1], futou_date[2],
         solar_term_date[0], solar_term_date[1], solar_term_date[2]
@@ -209,7 +208,7 @@ def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu):
     if days_diff > 0:
         if days_diff > 9 and solar_term in ["芒种", "大雪"]:
             prev_term = get_previous_solar_term(solar_term)
-            prev_jushu = data.ju_table_base.get(prev_term, 1)  # 获取上一个节气的局数
+            prev_jushu = data.ju_table_base.get(prev_term, 1)
             return prev_jushu
         else:
             return jushu
@@ -217,22 +216,24 @@ def check_chaoshen_jieqi(solar_term_date, futou_date, solar_term, jushu):
         return jushu
     else:
         return jushu
-    
+
 def get_jushu(year, month, day):
+    """获取奇门遁甲的局数"""
     solar_term_name, days_after, solar_term_date = Solar_terms(year, month, day)
     if solar_term_name in data.yang_dun:
-        yinyang='阳'
+        yinyang = '阳'
         ju_table = data.yang_ju
     else:
         ju_table = data.yin_ju
-        yinyang='阴'
+        yinyang = '阴'
     futou_date, futou_ganzhi = find_futou(year, month, day)
     sanyuan = get_sanyuan(futou_ganzhi)
     base_jushu = ju_table.get(solar_term_name, {}).get(sanyuan, 1)
     final_jushu = check_chaoshen_jieqi(solar_term_date, futou_date, solar_term_name, base_jushu)
-    return yinyang,final_jushu
+    return yinyang, final_jushu
 
 def get_hour_ganzhi(day_ganzhi, hour):
+    """计算时柱干支"""
     day_gan = day_ganzhi[0]
     hour_branch = data.hour_to_branch[hour]
     branch_index = data.di_zhi.index(hour_branch)
@@ -243,11 +244,12 @@ def get_hour_ganzhi(day_ganzhi, hour):
     return hour_gan + hour_branch
 
 def get_xunshou(hour_ganzhi):
+    """获取旬首"""
     current_index = data.jiazi_list.index(hour_ganzhi)
     for i in range(current_index, -1, -1):
         if data.jiazi_list[i] in data.xunshou_list:
             return data.jiazi_list[i]
-    for i in range(len(data.jiazi_list)-1, current_index, -1):
+    for i in range(len(data.jiazi_list) - 1, current_index, -1):
         if data.jiazi_list[i] in data.xunshou_list:
             return data.jiazi_list[i]
     return '甲子'
@@ -259,16 +261,12 @@ def get_xunxu(xunshou):
 def get_zhifu_zhishi_index(ju_number, xunxu, yinyang):
     """计算值符和值使的序数"""
     if yinyang == "阳":
-        # 阳遁：直符直使序数 = 局数 + 旬序数 - 1
         index = ju_number + xunxu - 1
     else:
-        # 阴遁：直符直使序数 = 1 + 局数 - 旬序数
         index = 1 + ju_number - xunxu
     
-    # 如果计算结果大于9，则减去9
     if index > 9:
         index -= 9
-    # 如果计算结果小于1，则加上9
     elif index < 1:
         index += 9
     
@@ -280,49 +278,33 @@ def get_zhifu_zhishi_by_index(index):
 
 def determine_zhifu_and_zhishi(xunshou, ju_number, yinyang):
     """根据旬首、局数和阴阳遁确定值符和值使"""
-    # 获取旬序数
     xunxu = get_xunxu(xunshou)
-    
-    # 计算值符值使序数
     index = get_zhifu_zhishi_index(ju_number, xunxu, yinyang)
-    
-    # 根据序数确定值符和值使
     zhifu, zhishi = get_zhifu_zhishi_by_index(index)
-    
     return zhifu, zhishi
 
 def arrange_earth_plate(ju_number, yinyang):
+    """排地盘"""
     earth_plate_dict = {}
     start_index = ju_number - 1
     
     if yinyang == "阳":
-        # 阳遁顺行
-        for i, gong in enumerate(data.jiugong):  # 遍历所有九宫
+        for i, gong in enumerate(data.jiugong):
             star_index = (start_index + i) % 9
             earth_plate_dict[gong] = data.qiyi[star_index]
     else:
-        # 阴遁逆行
-        for i, gong in enumerate(data.jiugong):  # 遍历所有九宫
+        for i, gong in enumerate(data.jiugong):
             star_index = (start_index - i) % 9
             earth_plate_dict[gong] = data.qiyi[star_index]
     
     return earth_plate_dict
 
-
 def arrange_human_plate(xunshou, hour_zhi, yinyang):
-    zhishi_gate = data.xunshou_to_zhishi[xunshou]  # 获取值使的门
-    
-    # 获取时支对应的宫位
-    target_position = data.zhi_to_jiugong.get(hour_zhi)
-    if target_position is None:
-        target_position = "中"  # 如果时支没有对应宫位，默认为中宫
-    
-    # 找到值使门在初始布局中的位置
-    # 初始布局：休门在坎，生门在艮，伤门在震，杜门在巽，景门在离，死门在坤，惊门在兑，开门在乾
-    
+    """排人盘"""
+    zhishi_gate = data.xunshou_to_zhishi[xunshou]
+    target_position = data.zhi_to_jiugong.get(hour_zhi, "中")
     start_position = data.initial_gate_positions.get(zhishi_gate, "坎")
     
-    # 计算偏移量
     start_index = data.jiugong.index(start_position)
     target_index = data.jiugong.index(target_position)
     
@@ -333,13 +315,11 @@ def arrange_human_plate(xunshou, hour_zhi, yinyang):
     
     human_plate = {}
     
-    # 处理人盘，跳过中宫
     for i, pos in enumerate(data.jiugong):
-        if pos == "中":  # 跳过中宫
+        if pos == "中":
             human_plate[pos] = None
             continue
             
-        # 找到值使门在门列表中的索引
         zhishi_index = data.gates.index(zhishi_gate)
         
         if yinyang == "阳":
@@ -352,7 +332,7 @@ def arrange_human_plate(xunshou, hour_zhi, yinyang):
     return human_plate
 
 def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
-    # 找到值符星在地盘上的位置
+    """排天盘"""
     start_position = None
     for pos, star in earth_plate.items():
         if star == zhifu:
@@ -360,14 +340,10 @@ def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
             break
     
     if start_position is None:
-        start_position = "坎"  # 默认值
+        start_position = "坎"
     
-    # 获取时干对应的宫位
-    target_position = data.gan_to_jiugong.get(hour_gan)
-    if target_position is None:
-        target_position = "中"
+    target_position = data.gan_to_jiugong.get(hour_gan, "中")
     
-    # 计算偏移量
     start_index = data.jiugong.index(start_position)
     target_index = data.jiugong.index(target_position)
     
@@ -377,13 +353,10 @@ def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
         offset = (start_index - target_index) % 9
     
     heaven_plate = {}
-    
-    # 找到值符星在星列表中的索引
     zhifu_index = data.stars.index(zhifu)
     
-    # 排列天盘
     for i, pos in enumerate(data.jiugong):
-        if pos == "中":  # 跳过中宫
+        if pos == "中":
             heaven_plate[pos] = None
             continue
             
@@ -397,22 +370,19 @@ def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
     return heaven_plate
 
 def arrange_god_plate(zhifu_position, yinyang):
-    # 根据阴阳选择对应的神明列表
+    """排神盘"""
     if yinyang == "阳":
         gods = data.gods_yang
-        direction = 1  # 顺行
+        direction = 1
     else:
         gods = data.gods_yin  
-        direction = -1  # 逆行
+        direction = -1
     
     god_plate = {}
-    
-    # 找到值符神的位置
     start_index = data.jiugong.index(zhifu_position)
     
-    # 排列神盘
     for i, pos in enumerate(data.jiugong):
-        if pos == "中":  # 中宫为空
+        if pos == "中":
             god_plate[pos] = None
             continue
             
@@ -422,6 +392,7 @@ def arrange_god_plate(zhifu_position, yinyang):
     return god_plate
 
 def get_month_ganzhi(year_gan_zhi, month):
+    """计算月柱干支"""
     year_gan, year_zhi = year_gan_zhi
     gan_index = data.tian_gan.index(year_gan)
     zhi_index = data.di_zhi.index(year_zhi)
@@ -430,31 +401,24 @@ def get_month_ganzhi(year_gan_zhi, month):
     return month_gan, month_zhi
 
 def get_year_ganzhi(year):
+    """计算年柱干支"""
     gan_index = (year - 1) % 10
     zhi_index = (year - 1) % 12
     return data.tian_gan[gan_index], data.di_zhi[zhi_index]
 
 def create_qimen_pan(year, month, day, hour):
+    """创建奇门遁甲盘"""
     solar_term, _, solar_term_date = Solar_terms(year, month, day)
     yinyang, ju_number = get_jushu(year, month, day)
     day_ganzhi = get_jiazi(year, month, day)
     hour_ganzhi = get_hour_ganzhi(day_ganzhi, hour)
     xunshou = get_xunshou(hour_ganzhi)
     
-    print(f"旬首: {xunshou}")
-    
     earth_plate = arrange_earth_plate(ju_number, yinyang)
-    print(f"地盘: {earth_plate}")
     
-    # 使用新的函数确定值符和值使
     zhifu, zhishi = determine_zhifu_and_zhishi(xunshou, ju_number, yinyang)
     
-    print(f"值符星: {zhifu}")
-    print(f"值使门: {zhishi}")
-    
-    # 找到值符星在地盘上的位置
     zhifu_position = None
-    # 我们需要找到与值符对应的宫位
     for pos, star in data.jiugong_to_star.items():
         if star == zhifu:
             zhifu_position = pos
@@ -484,5 +448,3 @@ def create_qimen_pan(year, month, day, hour):
         '值符': zhifu,
         '值使': zhishi
     }
-print(create_qimen_pan(2024,8,16,14))
-
