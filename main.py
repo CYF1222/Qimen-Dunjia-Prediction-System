@@ -136,13 +136,13 @@ def create_input_tab(notebook):
     )
     
     # 移除了默认值，让用户手动选择
-    question_type_var = tk.StringVar()
+    question_type_var = tk.StringVar(value="")
     question_types = [
         "工作事业", "财运求财", "婚姻感情", "疾病健康", 
         "考试学习", "官司诉讼", "出行安全", "其他"
     ]
     
-    # 使用 tk.Radiobutton 替代 ttk.Radiobutton
+    # 使用 tk.Radiobutton，因为 ttk.Radiobutton 不支持 font 参数
     for i, q_type in enumerate(question_types):
         tk.Radiobutton(content_frame, text=q_type, variable=question_type_var, 
                        value=q_type, font=("Arial", 10)).grid(
@@ -202,7 +202,6 @@ def create_input_tab(notebook):
     frame.question_type_var = question_type_var
     
     return frame
-    # 排盘按钮 - 居中显示
 
 def create_pan_display_tab(notebook):
     """创建排盘显示标签页"""
@@ -257,70 +256,64 @@ def create_analysis_tab(notebook):
     return frame
 
 def create_yongshen_tab(notebook):
-    """创建用神分析标签页"""
+    """创建用神分析标签页 - 优化布局版本"""
     frame = ttk.Frame(notebook)
     notebook.add(frame, text="用神分析")
     
-    # 使用说明
-    help_frame = ttk.LabelFrame(frame, text="使用说明")
-    help_frame.pack(fill='x', padx=20, pady=5)
+    # 配置网格权重，使结果区域可以扩展
+    frame.grid_rowconfigure(1, weight=1)
+    frame.grid_columnconfigure(0, weight=1)
     
-    help_text = """选择用神类型：
-• 日干(自己)：自动使用日柱天干
-• 年命(他人)：需输入出生年份或干支
-• 时干(事体)：自动使用时柱天干  
-• 值符(领导)：自动使用值符星
-• 年干(上级)：自动使用年柱天干
-• 月干(平辈)：自动使用月柱天干
-• 特定用神：输入具体符号（天干、九星、八门等）"""
-    
-    help_label = ttk.Label(help_frame, text=help_text, justify=tk.LEFT, font=("Arial", 9))
-    help_label.pack(padx=10, pady=10)
+    # 上部控制面板框架
+    control_frame = ttk.Frame(frame)
+    control_frame.grid(row=0, column=0, sticky="ew", padx=20, pady=10)
+    control_frame.grid_columnconfigure(0, weight=1)
     
     # 用神选择框架
-    yongshen_frame = ttk.LabelFrame(frame, text="用神选择")
-    yongshen_frame.pack(fill='x', padx=20, pady=10)
+    yongshen_frame = ttk.LabelFrame(control_frame, text="用神选择")
+    yongshen_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
     
-    # 用神选择
-    ttk.Label(yongshen_frame, text="选择用神:", font=("Arial", 10, "bold")).grid(row=0, column=0, sticky="w")
+    # 使用网格布局来组织控件
+    yongshen_frame.grid_columnconfigure(1, weight=1)
     
-    # 移除了默认值，让用户手动选择
-    yongshen_var = tk.StringVar()
+    # 用神选择标签
+    ttk.Label(yongshen_frame, text="选择用神类型:", font=("Arial", 10, "bold")).grid(
+        row=0, column=0, sticky="w", padx=10, pady=5
+    )
+    
+    # 用神选择单选按钮
+    yongshen_var = tk.StringVar(value="")
     yongshen_options = [
         "日干(自己)", "年命(他人)", "时干(事体)", "值符(领导)", 
         "年干(上级)", "月干(平辈)", "特定用神"
     ]
     
+    # 创建单选按钮并布局
     for i, option in enumerate(yongshen_options):
-        ttk.Radiobutton(yongshen_frame, text=option, variable=yongshen_var, value=option).grid(
-            row=1 + i, column=0, sticky="w", padx=20, pady=2
+        tk.Radiobutton(yongshen_frame, text=option, variable=yongshen_var, 
+                       value=option).grid(
+            row=1 + i, column=0, columnspan=2, sticky="w", padx=20, pady=2
         )
     
-    # 特定用神输入
-    ttk.Label(yongshen_frame, text="输入内容:").grid(row=1 + len(yongshen_options), column=0, sticky="w", padx=20, pady=5)
+    # 特定用神输入框架
+    input_frame = ttk.Frame(yongshen_frame)
+    input_frame.grid(row=len(yongshen_options) + 1, column=0, columnspan=2, sticky="w", padx=20, pady=10)
+    
+    ttk.Label(input_frame, text="输入内容:").pack(side=tk.LEFT, padx=(0, 5))
     specific_yongshen_var = tk.StringVar()
-    specific_entry = ttk.Entry(yongshen_frame, textvariable=specific_yongshen_var, width=15)
-    specific_entry.grid(row=1 + len(yongshen_options), column=1, padx=5, pady=5)
+    specific_entry = ttk.Entry(input_frame, textvariable=specific_yongshen_var, width=25)
+    specific_entry.pack(side=tk.LEFT)
     
     # 输入提示标签
     input_tip_var = tk.StringVar(value="请选择用神类型")
-    input_tip_label = ttk.Label(yongshen_frame, textvariable=input_tip_var, font=("Arial", 8), foreground="blue")
-    input_tip_label.grid(row=2 + len(yongshen_options), column=0, columnspan=2, sticky="w", padx=20)
+    input_tip_label = ttk.Label(input_frame, textvariable=input_tip_var, 
+                                font=("Arial", 9), foreground="blue")
+    input_tip_label.pack(side=tk.LEFT, padx=(10, 0))
     
-    # 动态更新输入提示
-    def update_input_tip(*args):
-        selected_type = yongshen_var.get()
-        if selected_type == "年命(他人)":
-            input_tip_var.set("请输入出生年份(如1984)或干支(如甲子)")
-        elif selected_type == "特定用神":
-            input_tip_var.set("请输入天干、九星、八门等符号")
-        else:
-            input_tip_var.set("自动获取，无需输入")
-            specific_yongshen_var.set("")  # 清空输入框
+    # 分析按钮框架
+    button_frame = ttk.Frame(yongshen_frame)
+    button_frame.grid(row=len(yongshen_options) + 2, column=0, columnspan=2, pady=15)
     
-    yongshen_var.trace('w', update_input_tip)
-    
-    # 分析按钮
     def analyze_yongshen_callback():
         global current_pan, current_analysis
         if not current_pan:
@@ -342,16 +335,53 @@ def create_yongshen_tab(notebook):
         
         # 显示分析结果
         yongshen_text.delete(1.0, tk.END)
-        yongshen_text.insert(tk.END, current_analysis.get('yongshen_report', '分析结果'))
+        result = current_analysis.get('yongshen_report', '分析结果')
+        yongshen_text.insert(tk.END, result)
+        
+        # 更新状态
+        root.status_var.set("用神分析完成")
     
-    ttk.Button(yongshen_frame, text="分析用神", command=analyze_yongshen_callback).grid(
-        row=3 + len(yongshen_options), column=0, columnspan=2, pady=10
+    analyze_btn = ttk.Button(button_frame, text="分析用神", command=analyze_yongshen_callback)
+    analyze_btn.pack(padx=10, pady=5)
+    
+    # 动态更新输入提示
+    def update_input_tip(*args):
+        selected_type = yongshen_var.get()
+        if selected_type == "年命(他人)":
+            input_tip_var.set("请输入出生年份(如1984)或干支(如甲子)")
+            specific_entry.config(state="normal")
+        elif selected_type == "特定用神":
+            input_tip_var.set("请输入天干、九星、八门等符号")
+            specific_entry.config(state="normal")
+        else:
+            input_tip_var.set("自动获取，无需输入")
+            specific_yongshen_var.set("")  # 清空输入框
+            specific_entry.config(state="disabled")
+    
+    yongshen_var.trace('w', update_input_tip)
+    
+    # 下部结果区域 - 使用更大的空间
+    result_frame = ttk.LabelFrame(frame, text="用神分析结果")
+    result_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=(0, 10))
+    result_frame.grid_rowconfigure(0, weight=1)
+    result_frame.grid_columnconfigure(0, weight=1)
+    
+    # 用神分析结果显示 - 更大的文本区域
+    yongshen_text = scrolledtext.ScrolledText(
+        result_frame, 
+        font=("Arial", 11), 
+        wrap=tk.WORD,
+        padx=10,
+        pady=10
     )
+    yongshen_text.grid(row=0, column=0, sticky="nsew")
     
-    # 用神分析结果显示
-    yongshen_text = scrolledtext.ScrolledText(frame, font=("Arial", 11), wrap=tk.WORD, height=20)
-    yongshen_text.pack(fill='both', expand=True, padx=10, pady=10)
+    # 添加滚动条增强
+    scrollbar = ttk.Scrollbar(result_frame, command=yongshen_text.yview)
+    scrollbar.grid(row=0, column=1, sticky="ns")
+    yongshen_text.config(yscrollcommand=scrollbar.set)
     
+    # 存储变量供其他函数使用
     frame.yongshen_var = yongshen_var
     frame.specific_yongshen_var = specific_yongshen_var
     frame.yongshen_text = yongshen_text
