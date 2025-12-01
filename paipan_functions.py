@@ -356,9 +356,6 @@ def arrange_heaven_plate(earth_plate, zhifu, hour_gan, yinyang):
     zhifu_index = data.stars.index(zhifu)
     
     for i, pos in enumerate(data.jiugong):
-        if pos == "中":
-            heaven_plate[pos] = None
-            continue
             
         if yinyang == "阳":
             star_index = (zhifu_index + offset + i) % 9
