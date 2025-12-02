@@ -1,9 +1,4 @@
 import data
-import sys
-import io
-
-# 设置标准输出编码为UTF-8，确保中文字符正常显示
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def leap_year(year):
     """判断是否为闰年"""
