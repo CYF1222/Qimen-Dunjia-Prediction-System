@@ -19,7 +19,7 @@ def create_main_window():
     global root
     root = tk.Tk()
     root.title("奇门遁甲排盘系统")
-    root.geometry("1200x800")
+    root.geometry("600x800")
     # 创建主框架
     main_frame = ttk.Frame(root)
     main_frame.pack(fill='both', expand=True, padx=10, pady=10)
