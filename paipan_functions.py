@@ -15,7 +15,6 @@ def leap_year(year):
 def Solar_terms(year, month, day):
     """计算节气信息"""
     month_const = data.TERM_CONST[month]
-    
     # 根据年份范围选择对应的常数
     if (1900 <= year < 2000):
         year_const1 = month_const[0][0]
@@ -32,7 +31,6 @@ def Solar_terms(year, month, day):
         year_const2 = month_const[1][2]
         term_date1 = int(year_const1 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
         term_date2 = int(year_const2 + 0.2422 * (year - 2100) - int((year - 2100) / 4))
-    
     # 判断当前日期属于哪个节气区间
     if (term_date1 <= day < term_date2):
         return month_const[0][-1], day - term_date1, [year, month, term_date1]

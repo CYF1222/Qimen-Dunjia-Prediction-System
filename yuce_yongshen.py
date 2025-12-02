@@ -174,12 +174,10 @@ def find_specific_yongshen(pan, specific_yongshen):
     for pos in jiugong:
         if pan.get('地盘', {}).get(pos) == specific_yongshen:
             return pos
-    
     # 在天盘查找
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == specific_yongshen:
             return pos
-    
     # 在人盘查找
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == specific_yongshen:

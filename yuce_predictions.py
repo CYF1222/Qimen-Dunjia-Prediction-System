@@ -10,14 +10,12 @@ from yuce_yongshen import get_current_season
 def get_love_prediction(pan, gong, door, star, god):
     """获取感情预测建议"""
     advice_list = []
-    
     # 查找六合位置
     for pos in jiugong:
         if pan.get('神盘', {}).get(pos) == '六合':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 六合在{pos}宫({direction})，这个方位利于感情发展")
             break
-    
     # 根据门判断
     if door == '休门':
         advice_list.append("✅ 休门当值，适合两人世界，安静相处")
@@ -27,7 +25,6 @@ def get_love_prediction(pan, gong, door, star, god):
         advice_list.append("⚠️ 惊门当前，注意沟通方式，避免争吵")
     elif door == '死门':
         advice_list.append("🔴 死门当前，感情可能遇到困难")
-    
     # 根据星判断
     if star == '天芮':
         advice_list.append("⚠️ 天芮星照，感情可能存在问题，需多加沟通")
@@ -35,7 +32,6 @@ def get_love_prediction(pan, gong, door, star, god):
         advice_list.append("✅ 天心星现，心意相通，感情发展顺利")
     elif star == '天辅':
         advice_list.append("✅ 天辅星照，感情中学习成长，适合共同进步")
-    
     # 根据神判断
     if god == '六合':
         advice_list.append("✅ 六合守护，有良好的合作和婚姻缘分")
@@ -49,14 +45,12 @@ def get_love_prediction(pan, gong, door, star, god):
 def get_career_prediction(pan, gong, door, star, god):
     """获取事业预测建议"""
     advice_list = []
-    
     # 查找开门位置
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == '开门':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 开门在{pos}宫({direction})，事业发展机会在这个方向")
             break
-    
     # 根据门判断
     if door == '开门':
         advice_list.append("✅ 当前是开门，机会已经出现，大胆去尝试")
@@ -68,7 +62,6 @@ def get_career_prediction(pan, gong, door, star, god):
         advice_list.append("⚠️ 伤门临位，注意工作安全和避免冲动行事")
     elif door == '死门':
         advice_list.append("🔴 死门当前，工作可能遇到瓶颈，需另寻出路")
-    
     # 根据星判断
     if star == '天辅':
         advice_list.append("✅ 天辅星照，利于学习和技能提升，可以参加培训")
@@ -78,7 +71,6 @@ def get_career_prediction(pan, gong, door, star, god):
         advice_list.append("⚠️ 天芮星照，注意同事关系，避免口舌是非")
     elif star == '天蓬':
         advice_list.append("⚠️ 天蓬星照，有野心但需注意风险控制")
-    
     # 根据神判断
     if god == '值符':
         advice_list.append("✅ 值符护佑，有贵人相助，多听取领导意见")
@@ -92,21 +84,18 @@ def get_career_prediction(pan, gong, door, star, god):
 def get_wealth_prediction(pan, gong, door, star, god):
     """获取财运预测建议"""
     advice_list = []
-    
     # 查找生门位置
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == '生门':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 生门在{pos}宫({direction})，求财往这个方向有利")
             break
-    
     # 查找开门位置
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == '开门':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 开门在{pos}宫({direction})，合作或新项目可考虑这个方向")
             break
-    
     # 根据门判断
     if door == '生门':
         advice_list.append("✅ 当前就在生门宫位，财运机会就在眼前")
@@ -118,7 +107,6 @@ def get_wealth_prediction(pan, gong, door, star, god):
         advice_list.append("🔴 死门当前，财运不佳，守成为上")
     elif door == '惊门':
         advice_list.append("⚠️ 惊门当前，投资可能有意外损失，需特别谨慎")
-    
     # 查找戊土位置（钱财）
     for pos in jiugong:
         if pan.get('地盘', {}).get(pos) == '戊':
@@ -131,14 +119,12 @@ def get_wealth_prediction(pan, gong, door, star, god):
 def get_study_prediction(pan, gong, door, star, god):
     """获取学习预测建议"""
     advice_list = []
-    
     # 查找天辅星位置（文曲星）
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == '天辅':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 文昌星天辅在{pos}宫({direction})，在这个方位学习效果更好")
             break
-    
     # 根据星判断
     if star == '天辅':
         advice_list.append("✅ 当前有天辅星照，学习考试运势佳")
@@ -146,7 +132,6 @@ def get_study_prediction(pan, gong, door, star, god):
         advice_list.append("⚠️ 天芮星照，学习可能遇到障碍，需加倍努力")
     elif star == '天心':
         advice_list.append("✅ 天心星现，思维清晰，适合解题分析")
-    
     # 根据门判断
     if door == '景门':
         advice_list.append("✅ 景门当前，考试发挥好，但需防粗心")
@@ -156,7 +141,6 @@ def get_study_prediction(pan, gong, door, star, god):
         advice_list.append("✅ 休门当值，适合休息调整学习状态")
     elif door == '开门':
         advice_list.append("✅ 开门当值，新的学习机会或考试机会出现")
-    
     # 根据神判断
     if god == '太阴':
         advice_list.append("✅ 太阴守护，适合安静学习，深思熟虑")
@@ -168,21 +152,18 @@ def get_study_prediction(pan, gong, door, star, god):
 def get_health_prediction(pan, gong, door, star, god):
     """获取健康预测建议"""
     advice_list = []
-    
     # 查找天芮星位置（病星）
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == '天芮':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"⚠️ 病星天芮在{pos}宫({direction})，注意相关脏腑健康")
             break
-    
     # 查找天心星位置（医星）
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == '天心':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 医星天心在{pos}宫({direction})，治疗可往这个方向寻找")
             break
-    
     # 根据门判断
     if door == '死门':
         advice_list.append("🔴 死门当前，病情需重视，及时就医")
@@ -192,13 +173,11 @@ def get_health_prediction(pan, gong, door, star, god):
         advice_list.append("✅ 生门当值，康复能力较强，恢复快")
     elif door == '伤门':
         advice_list.append("⚠️ 伤门临位，注意意外伤害或手术")
-    
     # 根据星判断
     if star == '天芮':
         advice_list.append("⚠️ 当前有天芮星照，需特别注意健康问题")
     elif star == '天心':
         advice_list.append("✅ 天心星现，医疗效果较好，康复顺利")
-    
     # 根据宫位对应的脏腑
     if gong in gong_to_organ:
         advice_list.append(f"📍 当前宫位对应：{gong_to_organ[gong]}")
@@ -208,14 +187,12 @@ def get_health_prediction(pan, gong, door, star, god):
 def get_lawsuit_prediction(pan, gong, door, star, god):
     """获取官司诉讼预测建议"""
     advice_list = []
-    
     # 查找值符位置
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == pan.get('值符', ''):
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 值符在{pos}宫({direction})，这个方位寻求司法帮助更有效")
             break
-    
     # 根据门判断
     if door == '景门':
         advice_list.append("✅ 景门当值，注重证据和事实，准备充分")
@@ -225,13 +202,11 @@ def get_lawsuit_prediction(pan, gong, door, star, god):
         advice_list.append("⚠️ 惊门临位，可能有意外情况，需谨慎应对")
     elif door == '死门':
         advice_list.append("🔴 死门当前，诉讼结果可能不利")
-    
     # 根据星判断
     if star == '天柱':
         advice_list.append("⚠️ 天柱星照，注意口舌是非，避免情绪化")
     elif star == '天心':
         advice_list.append("✅ 天心星现，思维清晰，利于法律事务")
-    
     # 根据神判断
     if god == '值符':
         advice_list.append("✅ 值符护佑，有官方支持或贵人相助")
@@ -245,21 +220,18 @@ def get_lawsuit_prediction(pan, gong, door, star, god):
 def get_travel_prediction(pan, gong, door, star, god):
     """获取出行安全预测建议"""
     advice_list = []
-    
     # 查找天冲星位置
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == '天冲':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"✅ 天冲星在{pos}宫({direction})，这个方向出行较顺利")
             break
-    
     # 查找伤门位置
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == '伤门':
             direction = convert_gong_to_direction(pos)
             advice_list.append(f"⚠️ 伤门在{pos}宫({direction})，这个方位需注意安全")
             break
-    
     # 根据门判断
     if door == '开门':
         advice_list.append("✅ 开门当值，出行顺利，可以尝试新路线")
@@ -269,7 +241,6 @@ def get_travel_prediction(pan, gong, door, star, god):
         advice_list.append("🔴 死门当前，出行需特别谨慎，避免长途")
     elif door == '伤门':
         advice_list.append("⚠️ 伤门临位，注意交通安全，避免意外")
-    
     # 根据神判断
     if god == '太阴':
         advice_list.append("✅ 太阴守护，适合隐秘出行，低调行事")
@@ -293,7 +264,6 @@ def get_general_prediction(door, star, god):
         advice_list.append("✅ 吉神护佑，有贵人相助")
     elif god in xiong_gods:
         advice_list.append("⚠️ 凶神临位，需小心应对")
-    
     # 根据星的基本判断
     if star in ['天辅', '天心', '天任']:
         advice_list.append("✅ 当前吉星当值，运势较为顺利")
@@ -323,7 +293,6 @@ def add_general_suggestions(advice_list, yinyang, solar_term):
 def get_detailed_love_prediction(pan, yongshen_info):
     """详细的感情预测分析"""
     analysis = "💖 详细感情预测：\n\n"
-    
     # 查找六合位置
     liuhe_pos = None
     for pos in jiugong:
@@ -337,7 +306,6 @@ def get_detailed_love_prediction(pan, yongshen_info):
         analysis += f"   • 你的正缘可能出现在{direction}\n"
         time_desc = gong_to_time.get(liuhe_pos, '相关时间')
         analysis += f"   • 在{time_desc}更容易遇到合适的人\n"
-    
     # 查找天芮星位置
     tianrui_pos = None
     for pos in jiugong:
@@ -350,7 +318,6 @@ def get_detailed_love_prediction(pan, yongshen_info):
         analysis += f"⚠️ 天芮星（问题）在{tianrui_pos}宫({direction})，提示：\n"
         analysis += f"   • 感情中可能存在{direction}相关的问题\n"
         analysis += "   • 需要更多的沟通和理解\n"
-    
     # 什么时候表白合适
     analysis += "\n📅 最佳表白时机：\n"
     
@@ -359,7 +326,6 @@ def get_detailed_love_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}表白效果更佳\n"
-    
     # 根据季节判断
     solar_term = pan.get('基本信息', {}).get('节气', '')
     season = get_current_season(solar_term)
@@ -371,7 +337,6 @@ def get_detailed_love_prediction(pan, yongshen_info):
         analysis += "   • 秋季（8-10月）收获季节，适合确定关系\n"
     elif season == '冬':
         analysis += "   • 冬季（11-1月）收藏时节，适合培养感情\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -404,7 +369,6 @@ def get_detailed_love_prediction(pan, yongshen_info):
 def get_detailed_career_prediction(pan, yongshen_info):
     """详细的事业预测分析"""
     analysis = "💼 详细事业预测：\n\n"
-    
     # 查找开门位置
     kaimen_pos = None
     for pos in jiugong:
@@ -418,7 +382,6 @@ def get_detailed_career_prediction(pan, yongshen_info):
         analysis += f"   • 事业发展机会在{direction}\n"
         time_desc = gong_to_time.get(kaimen_pos, '相关时间')
         analysis += f"   • 在{time_desc}更容易成功\n"
-    
     # 查找生门位置
     shengmen_pos = None
     for pos in jiugong:
@@ -431,7 +394,6 @@ def get_detailed_career_prediction(pan, yongshen_info):
         analysis += f"💰 生门（财运）在{shengmen_pos}宫({direction})，说明：\n"
         analysis += f"   • 财运机会在{direction}\n"
         analysis += "   • 适合投资或创业\n"
-    
     # 最佳工作变动时机
     analysis += "\n📅 最佳工作变动时机：\n"
     
@@ -440,7 +402,6 @@ def get_detailed_career_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}考虑变动更有利\n"
-    
     # 根据阴阳遁判断
     yinyang = pan.get('基本信息', {}).get('阴阳遁', '')
     if yinyang == '阳遁':
@@ -449,7 +410,6 @@ def get_detailed_career_prediction(pan, yongshen_info):
     else:
         analysis += "   • 当前阴遁，适合等待合适时机\n"
         analysis += "   • 保守行事，稳固现有基础\n"
-    
     # 根据值符值使判断
     zhifu = pan.get('值符', '')
     zhishi = pan.get('值使', '')
@@ -463,7 +423,6 @@ def get_detailed_career_prediction(pan, yongshen_info):
 def get_detailed_wealth_prediction(pan, yongshen_info):
     """详细的财运预测分析"""
     analysis = "💰 详细财运预测：\n\n"
-    
     # 查找生门位置
     shengmen_pos = None
     for pos in jiugong:
@@ -477,7 +436,6 @@ def get_detailed_wealth_prediction(pan, yongshen_info):
         analysis += f"   • 求财最佳方向是{direction}\n"
         time_desc = gong_to_time.get(shengmen_pos, '相关时间')
         analysis += f"   • 在{time_desc}财运最旺\n"
-    
     # 查找开门位置
     kaimen_pos = None
     for pos in jiugong:
@@ -490,7 +448,6 @@ def get_detailed_wealth_prediction(pan, yongshen_info):
         analysis += f"🚪 开门（机会）在{kaimen_pos}宫({direction})，说明：\n"
         analysis += f"   • 合作机会在{direction}\n"
         analysis += "   • 适合开展新业务或合作\n"
-    
     # 查找戊土位置
     wutu_pos = None
     for pos in jiugong:
@@ -503,10 +460,8 @@ def get_detailed_wealth_prediction(pan, yongshen_info):
         analysis += f"💵 戊土（钱财）在{wutu_pos}宫({direction})，说明：\n"
         analysis += f"   • 钱财与{direction}相关\n"
         analysis += "   • 注意财务管理和投资方向\n"
-    
     # 投资建议
     analysis += "\n📈 投资建议：\n"
-    
     # 根据季节判断
     solar_term = pan.get('基本信息', {}).get('节气', '')
     season = get_current_season(solar_term)
@@ -523,7 +478,6 @@ def get_detailed_wealth_prediction(pan, yongshen_info):
     elif season == '冬':
         analysis += "   • 冬季适合保守投资\n"
         analysis += "   • 养精蓄锐，等待来年机会\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -551,7 +505,6 @@ def get_detailed_wealth_prediction(pan, yongshen_info):
 def get_detailed_study_prediction(pan, yongshen_info):
     """详细的学习预测分析"""
     analysis = "📚 详细学习预测：\n\n"
-    
     # 查找天辅星位置
     tianfu_pos = None
     for pos in jiugong:
@@ -565,7 +518,6 @@ def get_detailed_study_prediction(pan, yongshen_info):
         analysis += f"   • 学习最佳方位是{direction}\n"
         time_desc = gong_to_time.get(tianfu_pos, '相关时间')
         analysis += f"   • 在{time_desc}学习效果最好\n"
-    
     # 考试时间建议
     analysis += "\n📅 最佳考试时间：\n"
     
@@ -574,7 +526,6 @@ def get_detailed_study_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}考试状态更佳\n"
-    
     # 根据季节判断
     solar_term = pan.get('基本信息', {}).get('节气', '')
     season = get_current_season(solar_term)
@@ -591,7 +542,6 @@ def get_detailed_study_prediction(pan, yongshen_info):
     elif season == '冬':
         analysis += "   • 冬季适合深入学习\n"
         analysis += "   • 专注力强，适合攻克难点\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -613,7 +563,6 @@ def get_detailed_study_prediction(pan, yongshen_info):
             analysis += "   • 开门当值，新的考试机会\n"
             analysis += "   • 可以尝试新的考试类型\n"
             analysis += "   • 开放心态，接受挑战\n"
-    
     # 学习方法建议
     analysis += "\n💡 学习方法建议：\n"
     
@@ -636,7 +585,6 @@ def get_detailed_study_prediction(pan, yongshen_info):
 def get_detailed_health_prediction(pan, yongshen_info):
     """详细的健康预测分析"""
     analysis = "💊 详细健康预测：\n\n"
-    
     # 查找天芮星位置
     tianrui_pos = None
     for pos in jiugong:
@@ -650,7 +598,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
         analysis += f"   • 健康问题与{direction}相关\n"
         time_desc = gong_to_time.get(tianrui_pos, '相关时间')
         analysis += f"   • 在{time_desc}症状可能加重\n"
-    
     # 查找天心星位置
     tianxin_pos = None
     for pos in jiugong:
@@ -663,7 +610,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
         analysis += f"✅ 医星天心在{tianxin_pos}宫({direction})，说明：\n"
         analysis += f"   • 医疗资源在{direction}更有效\n"
         analysis += "   • 治疗效果较好，康复顺利\n"
-    
     # 最佳治疗时机
     analysis += "\n📅 最佳治疗时机：\n"
     
@@ -672,7 +618,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}治疗效果更佳\n"
-    
     # 根据季节判断
     solar_term = pan.get('基本信息', {}).get('节气', '')
     season = get_current_season(solar_term)
@@ -689,7 +634,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
     elif season == '冬':
         analysis += "   • 冬季养肾，注意泌尿系统\n"
         analysis += "   • 保暖防寒，适当进补\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -716,7 +660,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
             analysis += "   • 伤门临位，注意意外伤害\n"
             analysis += "   • 避免危险活动\n"
             analysis += "   • 如有手术，选择吉日\n"
-    
     # 养生方法
     analysis += "\n🌿 养生方法建议：\n"
     
@@ -744,7 +687,6 @@ def get_detailed_health_prediction(pan, yongshen_info):
 def get_detailed_lawsuit_prediction(pan, yongshen_info):
     """详细的官司诉讼预测分析"""
     analysis = "⚖️ 详细官司诉讼预测：\n\n"
-    
     # 查找值符位置
     zhifu_pos = None
     for pos in jiugong:
@@ -757,7 +699,6 @@ def get_detailed_lawsuit_prediction(pan, yongshen_info):
         analysis += f"⭐ 值符（法官/裁决者）在{zhifu_pos}宫({direction})，说明：\n"
         analysis += f"   • 司法资源或法官态度在{direction}有利\n"
         analysis += "   • 寻求官方渠道解决更有效\n"
-    
     # 查找天柱星位置（主口舌是非）
     tianzhu_pos = None
     for pos in jiugong:
@@ -771,7 +712,6 @@ def get_detailed_lawsuit_prediction(pan, yongshen_info):
         analysis += f"   • 争议焦点与{direction}相关\n"
         analysis += "   • 注意法律文书的准确性\n"
         analysis += "   • 避免口头承诺，以书面为准\n"
-    
     # 最佳解决时机
     analysis += "\n📅 最佳解决时机：\n"
     
@@ -780,7 +720,6 @@ def get_detailed_lawsuit_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}处理法律事务更有利\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -802,10 +741,8 @@ def get_detailed_lawsuit_prediction(pan, yongshen_info):
             analysis += "   • 惊门当值，可能有意外情况\n"
             analysis += "   • 做好多手准备\n"
             analysis += "   • 保持冷静，避免情绪化\n"
-    
     # 和解建议
     analysis += "\n🤝 和解建议：\n"
-    
     # 查找六合位置
     liuhe_pos = None
     for pos in jiugong:
@@ -826,7 +763,6 @@ def get_detailed_lawsuit_prediction(pan, yongshen_info):
 def get_detailed_travel_prediction(pan, yongshen_info):
     """详细的出行安全预测分析"""
     analysis = "✈️ 详细出行安全预测：\n\n"
-    
     # 查找天冲星位置（主出行）
     tianchong_pos = None
     for pos in jiugong:
@@ -840,7 +776,6 @@ def get_detailed_travel_prediction(pan, yongshen_info):
         analysis += f"   • 出行方向以{direction}较佳\n"
         time_desc = gong_to_time.get(tianchong_pos, '相关时间')
         analysis += f"   • 在{time_desc}出行更顺利\n"
-    
     # 查找伤门位置（主伤害）
     shangmen_pos = None
     for pos in jiugong:
@@ -854,7 +789,6 @@ def get_detailed_travel_prediction(pan, yongshen_info):
         analysis += f"   • {direction}需注意安全\n"
         analysis += "   • 避免高风险活动\n"
         analysis += "   • 注意交通安全\n"
-    
     # 最佳出行时间
     analysis += "\n📅 最佳出行时间：\n"
     
@@ -863,7 +797,6 @@ def get_detailed_travel_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}出行更安全顺利\n"
-    
     # 根据门判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -885,10 +818,8 @@ def get_detailed_travel_prediction(pan, yongshen_info):
             analysis += "   • 死门当前，出行需谨慎\n"
             analysis += "   • 尽量避免长途旅行\n"
             analysis += "   • 做好应急准备\n"
-    
     # 交通工具选择
     analysis += "\n🚗 交通工具选择：\n"
-    
     # 根据宫位判断
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
@@ -906,10 +837,8 @@ def get_detailed_travel_prediction(pan, yongshen_info):
         elif gong in ['坤', '艮', '中']:
             analysis += f"   • {direction}陆地交通工具较安全\n"
             analysis += f"   • {direction}较顺利\n"
-    
     # 安全注意事项
     analysis += "\n🔒 安全注意事项：\n"
-    
     # 查找白虎位置
     baihu_pos = None
     for pos in jiugong:
@@ -922,7 +851,6 @@ def get_detailed_travel_prediction(pan, yongshen_info):
         analysis += f"   • 白虎在{baihu_pos}宫({direction})，该方位可能有风险\n"
         analysis += "   • 避免夜间单独出行\n"
         analysis += "   • 保管好贵重物品\n"
-    
     # 查找太阴位置
     taiyin_pos = None
     for pos in jiugong:
@@ -943,18 +871,15 @@ def predict_timing(pan, yongshen_info, question_type):
     # 获取基本信息
     ju_shu = pan.get('基本信息', {}).get('局数', '')
     yinyang = pan.get('基本信息', {}).get('阴阳遁', '')
-    
     # 一、时间判断
     timing_analysis += "一、时间判断（什么时候会有什么变化？）\n"
     timing_analysis += "-"*40 + "\n"
     
     if yongshen_info and '宫位' in yongshen_info:
         yongshen_gong = yongshen_info['宫位']
-        
         # 从数据文件中获取宫位与时间对应关系
         time_desc = gong_to_time.get(yongshen_gong, '近期内')
         timing_analysis += f"1. 关键时间点：{time_desc}\n"
-        
         # 根据局数判断时间长短
         if 1 <= ju_shu <= 3:
             timing_analysis += "2. 时间快慢：较快，可能在几天到一周内有结果\n"
@@ -964,7 +889,6 @@ def predict_timing(pan, yongshen_info, question_type):
             timing_analysis += "2. 时间快慢：较慢，可能需要一个月左右\n"
     else:
         timing_analysis += "1. 请先确定用神位置，才能准确判断时间\n"
-    
     # 二、现状分析
     timing_analysis += "\n二、当前情况分析\n"
     timing_analysis += "-"*40 + "\n"
@@ -976,18 +900,14 @@ def predict_timing(pan, yongshen_info, question_type):
         god = pan.get('神盘', {}).get(gong, '')
         
         timing_analysis += f"1. 你的状态：用神在{gong}宫({convert_gong_to_direction(gong)})\n"
-        
         # 门的状态描述
         timing_analysis += f"2. 当前机会：{door_desc.get(door, '需要结合具体分析')}\n"
-        
         # 星的状态描述
         timing_analysis += f"3. 个人状态：{star_desc.get(star, '状态平稳')}\n"
-        
         # 神的状态描述
         timing_analysis += f"4. 外部环境：{god_desc.get(god, '环境一般')}\n"
     else:
         timing_analysis += "无法分析现状，请先确定用神位置\n"
-    
     # 三、行动建议
     timing_analysis += "\n三、行动建议\n"
     timing_analysis += "-"*40 + "\n"
@@ -999,7 +919,6 @@ def predict_timing(pan, yongshen_info, question_type):
         door = pan.get('人盘', {}).get(gong, '')
         star = pan.get('天盘', {}).get(gong, '')
         god = pan.get('神盘', {}).get(gong, '')
-        
         # 根据问题类型和当前盘局动态生成建议
         if question_type == "婚姻感情":
             advice_list = get_love_prediction(pan, gong, door, star, god)
@@ -1017,23 +936,19 @@ def predict_timing(pan, yongshen_info, question_type):
             advice_list = get_travel_prediction(pan, gong, door, star, god)
         else:
             advice_list = get_general_prediction(door, star, god)
-        
         # 添加通用建议
         add_general_suggestions(advice_list, yinyang, pan.get('基本信息', {}).get('节气', ''))
-        
         # 显示建议
         advice_list = advice_list[:5]
         
     else:
         advice_list.append("请先确定用神位置，才能给出针对性建议")
-    
     # 显示建议
     if advice_list:
         for i, advice in enumerate(advice_list, 1):
             timing_analysis += f"{i}. {advice}\n"
     else:
         timing_analysis += "暂无具体建议\n"
-    
     # 四、特殊提示
     timing_analysis += "\n四、特殊提示\n"
     timing_analysis += "-"*40 + "\n"
@@ -1041,7 +956,6 @@ def predict_timing(pan, yongshen_info, question_type):
     special_tips = get_special_tips(pan, yongshen_info)
     for tip in special_tips:
         timing_analysis += f"{tip}\n"
-    
     # 五、简单总结
     timing_analysis += "\n五、总结\n"
     timing_analysis += "-"*40 + "\n"
@@ -1049,11 +963,9 @@ def predict_timing(pan, yongshen_info, question_type):
     summary = get_summary(pan, yongshen_info, question_type)
     for i, item in enumerate(summary, 1):
         timing_analysis += f"{i}. {item}\n"
-    
     # 添加预测型分析
     timing_analysis += "\n" + "="*50 + "\n"
     timing_analysis += "【预测分析】\n\n"
-    
     # 根据问题类型添加特定预测
     if question_type == "婚姻感情":
         timing_analysis += get_detailed_love_prediction(pan, yongshen_info)
@@ -1069,7 +981,6 @@ def predict_timing(pan, yongshen_info, question_type):
         timing_analysis += get_detailed_lawsuit_prediction(pan, yongshen_info)
     elif question_type == "出行安全":
         timing_analysis += get_detailed_travel_prediction(pan, yongshen_info)
-    
     # 最后的实用提醒
     timing_analysis += "\n" + "="*50 + "\n"
     timing_analysis += "【重要提醒】\n"
