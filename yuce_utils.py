@@ -78,7 +78,7 @@ def get_special_tips(pan, yongshen_info):
             special_tips.append("🔴 白虎猖狂：可能有突发状况，需做好应急预案")
         elif earth == '丁' and pan.get('人盘', {}).get(gong, '') == pan.get('值使', ''):
             special_tips.append("🔴 玉女守门：适合暗中操作，保密进行效果更好")
-        # 检查其他宫位是否有特殊格局 - 改为具体方位
+        # 检查其他宫位是否有特殊格局 - 具体方位
         for pos in jiugong:
             if pos != gong:
                 e = pan.get('地盘', {}).get(pos, '')
@@ -131,7 +131,7 @@ def get_summary(pan, yongshen_info, question_type):
             summary.append("学习建议：勤奋复习，注意细节")
         elif question_type == "疾病健康":
             summary.append("健康建议：及时就医，注意调理")
-        # 宫位判断 - 改为具体方位
+        # 宫位判断 - 具体方位
         if gong in ['离', '震', '巽']:
             directions = []
             if gong == '离':
@@ -239,7 +239,7 @@ def analyze_love_prediction(pan, yongshen_info):
             analysis += "   • 当前适合发展长期关系\n"
             analysis += f"   • 在{pos}方位或时间更有利\n"
             break
-    # 查找天芮星（可能有问题）
+    # 查找天芮星
     for pos in jiugong:
         if pan.get('天盘', {}).get(pos) == '天芮':
             analysis += f"⚠️ 天芮星在{pos}宫，提示：\n"
