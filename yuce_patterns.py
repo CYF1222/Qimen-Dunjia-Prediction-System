@@ -3,13 +3,8 @@ from data import jiugong, special_patterns_names
 def analyze_patterns(pan):
     """分析格局与祸福"""
     analysis = "格局与祸福分析:\n\n"
-    analysis += "十干克应分析:\n"
-    for pos in jiugong:
-        earth = pan.get('地盘', {}).get(pos, '')
-        if earth:
-            analysis += f"  {pos}宫: {earth}\n"
     
-    analysis += "\n特殊格局与祸福判断:\n"
+    analysis += "特殊格局与祸福判断:\n"
     special_patterns = []
     fortune_advice = []
     

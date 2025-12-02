@@ -6,6 +6,18 @@
 from data import *
 from paipan_functions import *
 
+def convert_gong_to_direction(gong):
+    """将宫位转换为方位描述"""
+    return gong_to_direction.get(gong, gong)
+
+def convert_zhi_to_direction(zhi):
+    """将地支转换为方位描述"""
+    return zhi_to_direction_detail.get(zhi, zhi)
+
+def get_direction_by_gong(gong):
+    """根据宫位获取方位描述（更详细的版本）"""
+    return direction_map.get(gong, f'{gong}宫')
+
 def find_gan_conversion(gan):
     """查找天干转换"""
     return jia_conversion.get(gan, gan)
@@ -67,20 +79,21 @@ def get_special_tips(pan, yongshen_info):
         elif earth == '丁' and pan.get('人盘', {}).get(gong, '') == pan.get('值使', ''):
             special_tips.append("🔴 玉女守门：适合暗中操作，保密进行效果更好")
         
-        # 检查其他宫位是否有特殊格局
+        # 检查其他宫位是否有特殊格局 - 改为具体方位
         for pos in jiugong:
             if pos != gong:
                 e = pan.get('地盘', {}).get(pos, '')
                 h = pan.get('天盘', {}).get(pos, '')
+                direction = convert_gong_to_direction(pos)
                 
                 if e == '戊' and h == '丙':
-                    special_tips.append(f"✅ 青龙返首在{pos}宫，这个方位可能有意外之喜")
+                    special_tips.append(f"✅ 青龙返首在{pos}宫({direction})，这个方位可能有意外之喜")
                 elif e == '丙' and h == '戊':
-                    special_tips.append(f"✅ 飞鸟跌穴在{pos}宫，这个方向做事更顺利")
+                    special_tips.append(f"✅ 飞鸟跌穴在{pos}宫({direction})，这个方向做事更顺利")
                 elif e == '癸' and h == '丁':
-                    special_tips.append(f"⚠️ 癸+丁（蛇夭矫）在{pos}宫，这个方向可能有口舌是非")
+                    special_tips.append(f"⚠️ 癸+丁（蛇夭矫）在{pos}宫({direction})，这个方向可能有口舌是非")
                 elif e == '庚' and h == '丙':
-                    special_tips.append(f"⚠️ 庚+丙（贼必来）在{pos}宫，这个方向可能有竞争或阻碍")
+                    special_tips.append(f"⚠️ 庚+丙（贼必来）在{pos}宫({direction})，这个方向可能有竞争或阻碍")
         
         if not special_tips:
             special_tips.append("• 当前没有特别需要注意的特殊格局，按正常情况处理即可")
@@ -96,6 +109,7 @@ def get_summary(pan, yongshen_info, question_type):
     
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
+        direction = convert_gong_to_direction(gong)
         door = pan.get('人盘', {}).get(gong, '')
         god = pan.get('神盘', {}).get(gong, '')
         
@@ -123,15 +137,34 @@ def get_summary(pan, yongshen_info, question_type):
         elif question_type == "疾病健康":
             summary.append("健康建议：及时就医，注意调理")
         
-        # 宫位判断
+        # 宫位判断 - 改为具体方位
         if gong in ['离', '震', '巽']:
-            summary.append("方位提示：东方或南方可能更有利")
+            directions = []
+            if gong == '离':
+                directions.append('南方')
+            if gong == '震':
+                directions.append('东方')
+            if gong == '巽':
+                directions.append('东南方')
+            summary.append(f"方位提示：{', '.join(directions)}可能更有利")
         elif gong in ['乾', '兑']:
-            summary.append("方位提示：西方或西北方可能更有利")
+            directions = []
+            if gong == '乾':
+                directions.append('西北方')
+            if gong == '兑':
+                directions.append('西方')
+            summary.append(f"方位提示：{', '.join(directions)}可能更有利")
         elif gong in ['坎']:
             summary.append("方位提示：北方可能更有利")
         elif gong in ['坤', '艮', '中']:
-            summary.append("方位提示：中央或西南、东北方可能更有利")
+            directions = []
+            if gong == '坤':
+                directions.append('西南方')
+            if gong == '艮':
+                directions.append('东北方')
+            if gong == '中':
+                directions.append('中央')
+            summary.append(f"方位提示：{', '.join(directions)}可能更有利")
     
     else:
         summary.append("请先完成用神分析，才能进行总结判断")
@@ -143,7 +176,7 @@ def generate_comprehensive_report(pan, analysis):
     basic_info = pan.get('基本信息', {})
     
     report = f"""
-奇门遁甲祸福综合分析报告
+奇门遁甲综合分析报告
 ========================
 
 排盘信息:
@@ -172,16 +205,27 @@ def generate_comprehensive_report(pan, analysis):
         human = pan.get('人盘', {}).get(pos, '')
         god = pan.get('神盘', {}).get(pos, '')
         
-        report += f"{pos}宫: 地盘{earth} 天盘{heaven} 人盘{human} 神盘{god}\n"
+        # 标记用神宫位
+        yongshen_gong = analysis.get('yongshen_info', {}).get('宫位', '')
+        if pos == yongshen_gong:
+            report += f"{pos}宫[用神]: 地盘{earth} 天盘{heaven} 人盘{human} 神盘{god}\n"
+        else:
+            report += f"{pos}宫: 地盘{earth} 天盘{heaven} 人盘{human} 神盘{god}\n"
     
-    if analysis:
-        report += f"\n祸福分析结果:\n------------\n{analysis.get('yongshen_report', '暂无详细分析')}"
+    # 添加用神分析
+    if analysis and 'yongshen_report' in analysis:
+        report += f"\n用神分析:\n------------\n{analysis.get('yongshen_report', '暂无详细分析')}"
     else:
-        report += "\n祸福分析结果:\n------------\n请先进行用神分析"
+        report += "\n用神分析:\n------------\n请先进行用神分析"
+    
+    # 添加格局分析
+    from yuce_patterns import analyze_patterns
+    patterns_analysis = analyze_patterns(pan)
+    report += f"\n\n格局分析:\n------------\n{patterns_analysis}"
     
     report += """
 
-综合祸福建议:
+综合建议:
 ------------
 根据排盘结果，结合具体问题进行深入分析。
 注意考虑用神所在宫位的旺衰、生克关系以及特殊格局的影响。
@@ -194,21 +238,6 @@ def generate_comprehensive_report(pan, analysis):
 """
     
     return report
-
-def get_specific_prediction(pan, question_type, yongshen_info):
-    """获取特定问题的预测型分析"""
-    predictions = {
-        "婚姻感情": analyze_love_prediction,
-        "工作事业": analyze_career_prediction,
-        "财运求财": analyze_wealth_prediction,
-        "考试学习": analyze_study_prediction,
-        "疾病健康": analyze_health_prediction
-    }
-    
-    if question_type in predictions:
-        return predictions[question_type](pan, yongshen_info)
-    else:
-        return analyze_general_prediction(pan, yongshen_info)
     
 def analyze_love_prediction(pan, yongshen_info):
     """分析感情预测"""
