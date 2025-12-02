@@ -108,7 +108,6 @@ def get_summary(pan, yongshen_info, question_type):
     
     if yongshen_info and '宫位' in yongshen_info:
         gong = yongshen_info['宫位']
-        direction = convert_gong_to_direction(gong)
         door = pan.get('人盘', {}).get(gong, '')
         god = pan.get('神盘', {}).get(gong, '')
         # 门判断
@@ -233,14 +232,12 @@ def analyze_love_prediction(pan, yongshen_info):
     """分析感情预测"""
     analysis = "💖 感情预测分析：\n\n"
     # 查找六合位置
-    liuhe_found = False
     for pos in jiugong:
         if pan.get('神盘', {}).get(pos) == '六合':
             analysis += f"✅ 六合星在{pos}宫，表明：\n"
             analysis += "   • 有良好的婚姻缘分机会\n"
             analysis += "   • 当前适合发展长期关系\n"
             analysis += f"   • 在{pos}方位或时间更有利\n"
-            liuhe_found = True
             break
     # 查找天芮星（可能有问题）
     for pos in jiugong:
@@ -296,14 +293,12 @@ def analyze_career_prediction(pan, yongshen_info):
     """分析事业预测"""
     analysis = "💼 事业预测分析：\n\n"
     # 查找开门位置
-    kaimen_found = False
     for pos in jiugong:
         if pan.get('人盘', {}).get(pos) == '开门':
             analysis += f"✅ 开门在{pos}宫，表明：\n"
             analysis += "   • 事业发展有新的机会\n"
             analysis += f"   • 在{pos}方位发展更有利\n"
             analysis += "   • 适合开展新项目\n"
-            kaimen_found = True
             break
     # 查找值符星位置
     for pos in jiugong:
@@ -321,120 +316,5 @@ def analyze_career_prediction(pan, yongshen_info):
         time_desc = gong_to_time.get(gong, '')
         if time_desc:
             analysis += f"   • 在{time_desc}时考虑变动更有利\n"
-    
-    return analysis
-
-def analyze_wealth_prediction(pan, yongshen_info):
-    """分析财运预测"""
-    analysis = "💰 财运预测分析：\n\n"
-    # 查找生门位置
-    shengmen_found = False
-    for pos in jiugong:
-        if pan.get('人盘', {}).get(pos) == '生门':
-            analysis += f"✅ 生门在{pos}宫，表明：\n"
-            analysis += "   • 求财机会较多\n"
-            analysis += f"   • 在{pos}方位求财更有利\n"
-            analysis += "   • 适合投资和创业\n"
-            shengmen_found = True
-            break
-    # 投资建议
-    analysis += "\n💡 投资建议：\n"
-    # 根据季节判断
-    solar_term = pan.get('基本信息', {}).get('节气', '')
-    season = get_current_season(solar_term)
-    
-    if season == '春':
-        analysis += "   • 春季适合投资新兴行业\n"
-        analysis += "   • 可考虑科技、教育等领域\n"
-    elif season == '夏':
-        analysis += "   • 夏季适合短期投资\n"
-        analysis += "   • 注意风险控制\n"
-    elif season == '秋':
-        analysis += "   • 秋季适合收获投资\n"
-        analysis += "   • 可以考虑套现部分收益\n"
-    elif season == '冬':
-        analysis += "   • 冬季适合保守投资\n"
-        analysis += "   • 养精蓄锐，等待时机\n"
-    
-    return analysis
-
-def analyze_study_prediction(pan, yongshen_info):
-    """分析学习预测"""
-    analysis = "📚 学习预测分析：\n\n"
-    # 查找天辅星位置
-    tianfu_found = False
-    for pos in jiugong:
-        if pan.get('天盘', {}).get(pos) == '天辅':
-            analysis += f"✅ 天辅星在{pos}宫，表明：\n"
-            analysis += "   • 学习运势良好\n"
-            analysis += f"   • 在{pos}方位学习效果更好\n"
-            analysis += "   • 考试发挥出色\n"
-            tianfu_found = True
-            break
-    # 考试时间建议
-    analysis += "\n📅 考试时间建议：\n"
-    
-    if yongshen_info and '宫位' in yongshen_info:
-        gong = yongshen_info['宫位']
-        time_desc = gong_to_time.get(gong, '')
-        if time_desc:
-            analysis += f"   • 在{time_desc}时考试状态更佳\n"
-    
-    return analysis
-
-def analyze_health_prediction(pan, yongshen_info):
-    """分析健康预测"""
-    analysis = "💊 健康预测分析：\n\n"
-    # 查找天芮星位置
-    tianrui_found = False
-    for pos in jiugong:
-        if pan.get('天盘', {}).get(pos) == '天芮':
-            analysis += f"⚠️ 天芮星在{pos}宫，提示：\n"
-            analysis += "   • 需要注意健康状况\n"
-            analysis += f"   • 关注{pos}宫对应的脏腑\n"
-            analysis += "   • 建议定期体检\n"
-            tianrui_found = True
-            break
-    
-    # 养生建议
-    analysis += "\n🌿 养生建议：\n"
-    
-    # 根据季节判断
-    solar_term = pan.get('基本信息', {}).get('节气', '')
-    season = get_current_season(solar_term)
-    
-    if season == '春':
-        analysis += "   • 春季养肝，多吃绿色蔬菜\n"
-        analysis += "   • 适度运动，保持心情舒畅\n"
-    elif season == '夏':
-        analysis += "   • 夏季养心，注意防暑降温\n"
-        analysis += "   • 多喝水，避免暴晒\n"
-    elif season == '秋':
-        analysis += "   • 秋季养肺，注意防燥\n"
-        analysis += "   • 多吃梨、百合等润肺食物\n"
-    elif season == '冬':
-        analysis += "   • 冬季养肾，注意保暖\n"
-        analysis += "   • 早睡晚起，适当进补\n"
-    
-    return analysis
-
-def analyze_general_prediction(pan, yongshen_info):
-    """通用预测分析"""
-    analysis = "🔮 通用预测分析：\n\n"
-    # 根据值符值使判断
-    zhifu = pan.get('值符', '')
-    zhishi = pan.get('值使', '')
-    
-    analysis += f"当前值符（{zhifu}）主领导力，值使（{zhishi}）主执行力\n\n"
-    # 总体运势
-    analysis += "📈 总体运势：\n"
-    
-    is_yang = pan.get('基本信息', {}).get('阴阳遁', '') == '阳遁'
-    if is_yang:
-        analysis += "   • 阳遁当前，适合主动出击\n"
-        analysis += "   • 积极行动会有更好效果\n"
-    else:
-        analysis += "   • 阴遁当前，适合保守行事\n"
-        analysis += "   • 等待时机更为有利\n"
     
     return analysis

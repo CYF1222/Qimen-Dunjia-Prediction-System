@@ -7,7 +7,7 @@ from data import *
 from yuce_utils import *
 from yuce_yongshen import get_current_season
 
-def get_love_prediction(pan, gong, door, star, god):
+def get_love_prediction(pan, door, star, god):
     """获取感情预测建议"""
     advice_list = []
     # 查找六合位置
@@ -42,7 +42,7 @@ def get_love_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_career_prediction(pan, gong, door, star, god):
+def get_career_prediction(pan, door, star, god):
     """获取事业预测建议"""
     advice_list = []
     # 查找开门位置
@@ -81,7 +81,7 @@ def get_career_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_wealth_prediction(pan, gong, door, star, god):
+def get_wealth_prediction(pan, door):
     """获取财运预测建议"""
     advice_list = []
     # 查找生门位置
@@ -116,7 +116,7 @@ def get_wealth_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_study_prediction(pan, gong, door, star, god):
+def get_study_prediction(pan, door, star, god):
     """获取学习预测建议"""
     advice_list = []
     # 查找天辅星位置（文曲星）
@@ -149,7 +149,7 @@ def get_study_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_health_prediction(pan, gong, door, star, god):
+def get_health_prediction(pan, gong, door, star):
     """获取健康预测建议"""
     advice_list = []
     # 查找天芮星位置（病星）
@@ -184,7 +184,7 @@ def get_health_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_lawsuit_prediction(pan, gong, door, star, god):
+def get_lawsuit_prediction(pan, door, star, god):
     """获取官司诉讼预测建议"""
     advice_list = []
     # 查找值符位置
@@ -217,7 +217,7 @@ def get_lawsuit_prediction(pan, gong, door, star, god):
     
     return advice_list
 
-def get_travel_prediction(pan, gong, door, star, god):
+def get_travel_prediction(pan, door, god):
     """获取出行安全预测建议"""
     advice_list = []
     # 查找天冲星位置
@@ -921,19 +921,19 @@ def predict_timing(pan, yongshen_info, question_type):
         god = pan.get('神盘', {}).get(gong, '')
         # 根据问题类型和当前盘局动态生成建议
         if question_type == "婚姻感情":
-            advice_list = get_love_prediction(pan, gong, door, star, god)
+            advice_list = get_love_prediction(pan,  door, star, god)
         elif question_type == "工作事业":
-            advice_list = get_career_prediction(pan, gong, door, star, god)
+            advice_list = get_career_prediction(pan, door, star, god)
         elif question_type == "财运求财":
-            advice_list = get_wealth_prediction(pan, gong, door, star, god)
+            advice_list = get_wealth_prediction(pan, door)
         elif question_type == "考试学习":
-            advice_list = get_study_prediction(pan, gong, door, star, god)
+            advice_list = get_study_prediction(pan, door, star, god)
         elif question_type == "疾病健康":
-            advice_list = get_health_prediction(pan, gong, door, star, god)
+            advice_list = get_health_prediction(pan, gong, door, star)
         elif question_type == "官司诉讼":
-            advice_list = get_lawsuit_prediction(pan, gong, door, star, god)
+            advice_list = get_lawsuit_prediction(pan,  door, star, god)
         elif question_type == "出行安全":
-            advice_list = get_travel_prediction(pan, gong, door, star, god)
+            advice_list = get_travel_prediction(pan, door, god)
         else:
             advice_list = get_general_prediction(door, star, god)
         # 添加通用建议
