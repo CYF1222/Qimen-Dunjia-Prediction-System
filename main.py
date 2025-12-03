@@ -90,24 +90,27 @@ def create_input_tab(notebook):
     # 创建时间输入的网格布局
     time_grid = ttk.Frame(time_frame)
     time_grid.pack(fill='x', padx=10, pady=5)
+    # 获取当前时间
+    now = datetime.datetime.now()
+    
     # 年
     ttk.Label(time_grid, text="年:", width=5).grid(row=0, column=0, padx=(0, 5), pady=5, sticky="e")
-    year_var = tk.StringVar(value=str(datetime.datetime.now().year))
+    year_var = tk.StringVar(value=str(now.year))
     year_entry = ttk.Entry(time_grid, textvariable=year_var, width=15)
     year_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
     # 月
     ttk.Label(time_grid, text="月:", width=5).grid(row=0, column=2, padx=(20, 5), pady=5, sticky="e")
-    month_var = tk.StringVar(value=str(datetime.datetime.now().month))
+    month_var = tk.StringVar(value=str(now.month))
     month_entry = ttk.Entry(time_grid, textvariable=month_var, width=15)
     month_entry.grid(row=0, column=3, padx=5, pady=5, sticky="w")
     # 日
     ttk.Label(time_grid, text="日:", width=5).grid(row=1, column=0, padx=(0, 5), pady=5, sticky="e")
-    day_var = tk.StringVar(value=str(datetime.datetime.now().day))
+    day_var = tk.StringVar(value=str(now.day))
     day_entry = ttk.Entry(time_grid, textvariable=day_var, width=15)
     day_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
     # 时
     ttk.Label(time_grid, text="时:", width=5).grid(row=1, column=2, padx=(20, 5), pady=5, sticky="e")
-    hour_var = tk.StringVar(value=str(datetime.datetime.now().hour))
+    hour_var = tk.StringVar(value=str(now.hour))
     hour_entry = ttk.Entry(time_grid, textvariable=hour_var, width=15)
     hour_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
     # ========== 第二部分：问题类型 ==========
