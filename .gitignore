@@ -5,3 +5,11 @@ __pycache__/yuce_patterns.cpython-310.pyc
 __pycache__/yuce_predictions.cpython-310.pyc
 __pycache__/yuce_utils.cpython-310.pyc
 __pycache__/yuce_yongshen.cpython-310.pyc
+__pycache__/data.cpython-313.pyc
+__pycache__/paipan_functions.cpython-313.pyc
+__pycache__/yuce_patterns.cpython-313.pyc
+__pycache__/yuce_predictions.cpython-313.pyc
+__pycache__/yuce_utils.cpython-313.pyc
+__pycache__/yuce_yongshen.cpython-313.pyc
+.gitignore
+__pycache__/ui.cpython-313.pyc
